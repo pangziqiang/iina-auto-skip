@@ -1,35 +1,28 @@
 :root {
-    --bg-secondary: #f5f5f7;
-    --bg-tertiary: #e8e8ed;
+    --bg-secondary: rgba(128,128,128,0.12);
+    --bg-tertiary: rgba(128,128,128,0.20);
     --text-primary: #1d1d1f;
     --text-secondary: #86868b;
-    --border: #d2d2d7;
+    --border: rgba(128,128,128,0.25);
     --accent: #007aff;
     --accent-hover: #0051d5;
-    --input-bg: #f5f5f7;
-    --input-border: #d2d2d7;
+    --input-bg: rgba(128,128,128,0.12);
+    --input-border: rgba(128,128,128,0.25);
     --input-focus: #007aff;
-    --success-bg: #e8f5e9;
+    --success-bg: rgba(52,199,89,0.18);
     --success-text: #2e7d32;
-    --toggle-bg: #e8e8ed;
+    --toggle-bg: rgba(128,128,128,0.30);
     --toggle-active: #007aff;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-secondary: #2a2a2a;
-        --bg-tertiary: #363636;
         --text-primary: #f5f5f7;
         --text-secondary: #98989d;
-        --border: #424245;
         --accent: #0a84ff;
         --accent-hover: #409cff;
-        --input-bg: #2a2a2a;
-        --input-border: #424245;
         --input-focus: #0a84ff;
-        --success-bg: #1b3a1d;
         --success-text: #66bb6a;
-        --toggle-bg: #424245;
         --toggle-active: #0a84ff;
     }
 }
@@ -97,6 +90,8 @@ input {
     padding: 10px 12px;
     background-color: var(--bg-secondary);
     border-radius: 6px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .toggle-label {
@@ -156,6 +151,8 @@ input {
     padding: 8px 12px;
     background-color: var(--bg-secondary);
     border-radius: 6px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .time-box {
@@ -245,6 +242,7 @@ button:active {
     flex: 1;
     min-height: 100px;
     overflow-y: auto;
+    padding-right: 14px;
 }
 
 .log-item {
@@ -256,6 +254,8 @@ button:active {
     font-family: "SF Mono", Monaco, monospace;
     font-size: 11px;
     color: var(--text-primary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .log-item:last-child {
@@ -268,4 +268,22 @@ button:active {
     color: var(--text-secondary);
     font-size: 12px;
     font-style: italic;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(128,128,128,0.35);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(128,128,128,0.55);
 }
