@@ -1,3 +1,5 @@
+> 本插件基于 [bbeny123/iina-jump-to-frame](https://github.com/bbeny123/iina-jump-to-frame) 改造，感谢原作者的优秀开源工作。
+
 # Auto Skip - IINA Plugin
 
 自动跳过片头片尾的 IINA 侧边栏插件。设置秒数后，播放时自动跳过指定区间。
