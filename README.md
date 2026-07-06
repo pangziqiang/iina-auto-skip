@@ -1,4 +1,4 @@
-> 本插件基于 [bbeny123/iina-jump-to-frame](https://github.com/bbeny123/iina-jump-to-frame) 改造，感谢原作者的优秀开源工作。
+> 本插件基于 [bbeny123/iina-jump-to-frame](https://github.com/bbeny123/iina-jump-to-frame) 改造，借助 AI 辅助完成代码修改。感谢原作者的优秀开源工作。
 
 # Auto Skip - IINA Plugin
 
