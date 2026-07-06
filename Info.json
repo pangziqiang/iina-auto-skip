@@ -1,0 +1,27 @@
+{
+  "identifier": "io.iina.auto-skip",
+  "version": "1.0.0",
+  "name": "自动跳过",
+  "description": "自动跳过片头片尾",
+  "author": {
+    "name": "lingya",
+    "url": ""
+  },
+  "entry": "src/index.js",
+  "helpPage": "src/help.html",
+  "preferencesPage": "src/preferences.html",
+  "preferenceDefaults": {
+    "keybind": "Meta+s",
+    "autoFocus": true,
+    "skipConfig": {
+      "enabled": false,
+      "introDuration": 0,
+      "outroDuration": 0
+    }
+  },
+  "sidebarTab": {
+    "name": "自动跳过"
+  },
+  "permissions": [],
+  "allowedDomains": ["*"]
+}

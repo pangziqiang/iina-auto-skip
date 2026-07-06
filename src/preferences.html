@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="preferences.css">
+</head>
+<body>
+    <div class="form-row">
+        <label for="keybindInput">快捷键</label>
+        <input type="text" id="keybindInput" data-type="string" placeholder="例如 Meta+s" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+
+        <div class="small secondary help-text">
+           <div><b>格式：</b><code>修饰键+按键</code>（例如 <code>Meta+g</code>、<code>Ctrl+Alt+LEFT</code>、<code>Shift+F5</code>）</div>
+           <div><b>修饰键：</b><code>Meta</code> (⌘)、<code>Ctrl</code>、<code>Alt</code>、<code>Shift</code></div>
+           <div>留空可禁用快捷键</div>
+        </div>
+
+        <div class="info-box warning" id="validationInfo">验证中...</div>
+    </div>
+
+    <div class="form-row">
+        <div class="toggle-row">
+            <label class="toggle-label">输入框自动跳转</label>
+            <label class="switch">
+                <input type="checkbox" id="autoFocusToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="help-text">开启后，在时/分/秒框中输入两位数字自动跳至下一框</div>
+    </div>
+
+    <div class="info-box info">ⓘ 快捷键修改需要重启 IINA 才能生效</div>
+
+    <script src="preferences.js"></script>
+</body>
+</html>

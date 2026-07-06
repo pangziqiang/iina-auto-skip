@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="preferences.css">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            html { color-scheme: dark; color: #eee; }
+        }
+        html, body { margin: 0; }
+        body { padding: 10px;  }
+        ul { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 6px; }
+        kbd {
+            background: rgba(128, 128, 128, 0.15);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-family: "SF Mono", "Menlo", monospace;
+            font-size: 0.9em;
+        }
+        strong { font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="form-row">
+        <label><b>使用方法</b></label>
+        <div class="help-text" style="margin-bottom: 12px;">
+            可通过以下方式切换侧边栏：
+        </div>
+        <ul>
+            <li>菜单：<strong>插件 → 自动跳过</strong></li>
+            <li>快捷键：<kbd>⌘</kbd> + <kbd>S</kbd>（可在<strong>偏好设置</strong>中修改）</li>
+        </ul>
+
+        <div class="info-box info" style="border-left: 3px solid #e67e22">
+            <label><b>⚠️ IINA API 限制：</b></label>
+            <ul style="margin-bottom: 0px;">
+                <li><strong>快捷键冲突检测</strong>需要重启 IINA 并加载媒体文件后才能生效</li>
+                <li>部分快捷键可能在偏好设置中显示「有效」时<strong>静默失效</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-row" style="margin-top: 20px;">
+        <label><b>自动跳过功能说明</b></label>
+        <div class="help-text">设置要跳过的区间，播放时会自动跳过：</div>
+        <ul>
+            <li><strong>跳过片头：</strong>设置开头要跳过的时/分/秒，播放到该位置前自动快进</li>
+            <li><strong>跳过片尾：</strong>设置结尾前停止的时/分/秒，播放到该位置时自动跳至末尾</li>
+        </ul>
+        <div class="help-text" style="margin-top: 8px;">
+            <b>输入方式：</b>使用三个框分别输入时、分、秒。秒数不限制范围，例如在秒框输入 90 等同于 1 分 30 秒。可在偏好设置中开启或关闭输入框自动跳转。
+        </div>
+        <div class="help-text" style="margin-top: 8px;">
+            <b>提示：</b>手动拖拽回跳过区域时仍会再次自动跳过，如需临时取消请在侧边栏关闭开关。
+        </div>
+    </div>
+</body>
+</html>
