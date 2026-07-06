@@ -1,6 +1,6 @@
 {
   "identifier": "io.iina.auto-skip",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "自动跳过",
   "description": "自动跳过片头片尾",
   "author": {
@@ -11,7 +11,7 @@
   "helpPage": "src/help.html",
   "preferencesPage": "src/preferences.html",
   "preferenceDefaults": {
-    "keybind": "Meta+s",
+    "keybind": "s",
     "autoFocus": true,
     "skipConfig": {
       "enabled": false,

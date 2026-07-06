@@ -84,16 +84,7 @@ setupAutoFocus(els.introM, els.introS);
 setupAutoFocus(els.outroH, els.outroM);
 setupAutoFocus(els.outroM, els.outroS);
 
-els.saveBtn.addEventListener('click', () => {
-  const config = {
-    enabled: els.enableToggle.checked,
-    introDuration: getIntroSeconds(),
-    outroDuration: getOutroSeconds()
-  };
-
-  iina.postMessage(PluginEvent.SAVE, config);
-  showStatus('已保存', 'success');
-});
+els.saveBtn.addEventListener('click', saveSettings);
 
 els.enableToggle.addEventListener('change', () => {
   // saved on button click
@@ -118,6 +109,21 @@ iina.onMessage(PluginEvent.LOG, ({ message }) => {
   while (els.logContainer.childElementCount > 20)
     els.logContainer.lastElementChild.remove();
 });
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') saveSettings();
+});
+
+function saveSettings() {
+  const config = {
+    enabled: els.enableToggle.checked,
+    introDuration: getIntroSeconds(),
+    outroDuration: getOutroSeconds()
+  };
+
+  iina.postMessage(PluginEvent.SAVE, config);
+  showStatus('已保存', 'success');
+}
 
 document.addEventListener('visibilitychange', () => {
   iina.postMessage(PluginEvent.VISIBILITY, !document.hidden);

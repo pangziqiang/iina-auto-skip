@@ -186,13 +186,6 @@ input {
     font-weight: 600;
 }
 
-.time-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-left: 6px;
-    white-space: nowrap;
-}
-
 .input-hint {
     font-size: 11px;
     color: var(--text-secondary);
