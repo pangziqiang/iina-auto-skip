@@ -94,13 +94,12 @@ function checkSkipPosition() {
     return;
   }
 
-  // Skip outro: seek near end to trigger natural EOF + next file
+  // Skip outro: seek to end to trigger natural EOF + next file
   if (config.outroDuration > 0) {
     const outroPoint = duration - config.outroDuration;
     if (pos >= outroPoint && pos < duration) {
       states.skipInProgress = true;
-      const nearEnd = Math.max(0, duration - 0.3);
-      mpv.command("seek", [nearEnd.toString(), "absolute"]);
+      mpv.command("seek", [duration.toString(), "absolute"]);
       addLog(`已跳过片尾 ${formatTimeStr(config.outroDuration)}`);
       setTimeout(resetSkipFlag, 500);
     }
