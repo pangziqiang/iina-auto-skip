@@ -7,6 +7,7 @@ const els = {
   outroM: document.getElementById('outroM'),
   outroS: document.getElementById('outroS'),
   saveBtn: document.getElementById('saveBtn'),
+  visualBtn: document.getElementById('visualBtn'),
   statusMsg: document.getElementById('statusMsg'),
   logContainer: document.getElementById('logContainer')
 }
@@ -85,6 +86,10 @@ setupAutoFocus(els.outroH, els.outroM);
 setupAutoFocus(els.outroM, els.outroS);
 
 els.saveBtn.addEventListener('click', saveSettings);
+
+els.visualBtn.addEventListener('click', () => {
+  iina.postMessage('overlay-open', null)
+});
 
 els.enableToggle.addEventListener('change', () => {
   // saved on button click

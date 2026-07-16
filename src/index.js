@@ -212,6 +212,10 @@ event.on("iina.window-loaded", () => {
     saveConfig(newConfig);
   });
 
+  sidebar.onMessage('overlay-open', () => {
+    showOverlay();
+  });
+
   overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
