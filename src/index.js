@@ -76,10 +76,15 @@ function stopOverlayTimeSync() {
 }
 
 function overlaySeek(time) {
-  if (time < 0) {
-    return
-  }
   mpv.setProperty("time-pos", time)
+}
+
+function overlayPause() {
+  mpv.setProperty("pause", true)
+}
+
+function overlayResume() {
+  mpv.setProperty("pause", false)
 }
 
 function overlaySave(newConfig) {
@@ -217,6 +222,8 @@ event.on("iina.window-loaded", () => {
   });
 
   overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
+  overlay.onMessage('overlay-pause', overlayPause);
+  overlay.onMessage('overlay-resume', overlayResume);
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
 

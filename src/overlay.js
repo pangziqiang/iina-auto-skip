@@ -94,6 +94,7 @@ function pctToTime(pct) {
 }
 
 function handleDragStart(e, handleType) {
+  iina.postMessage('overlay-pause', null)
   draggingHandle = handleType
   const handle = handleType === 'intro' ? els.handleIntro : els.handleOutro
   handle.classList.add('dragging')
@@ -115,14 +116,12 @@ function handleDragMove(clientX) {
   pct = clamp(pct, 0, 100)
 
   if (draggingHandle === 'intro') {
-    pct = Math.min(pct, outroPct - 1)
-    introPct = pct
-    introTime = pctToTime(pct)
+    introTime = Math.min(pctToTime(pct), outroTime - 1)
+    introPct = (introTime / duration) * 100
     iina.postMessage('overlay-seek', introTime)
   } else {
-    pct = Math.max(pct, introPct + 1)
-    outroPct = pct
-    outroTime = pctToTime(pct)
+    outroTime = Math.max(pctToTime(pct), introTime + 1)
+    outroPct = (outroTime / duration) * 100
     iina.postMessage('overlay-seek', outroTime)
   }
 
@@ -136,7 +135,7 @@ function handleDragEnd() {
   const label = draggingHandle === 'intro' ? els.labelIntro : els.labelOutro
   label.classList.remove('dragging')
 
-  iina.postMessage('overlay-seek', -1)
+  iina.postMessage('overlay-resume', null)
   draggingHandle = null
   resetIdleTimer()
 }
