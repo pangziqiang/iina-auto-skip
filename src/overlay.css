@@ -55,7 +55,7 @@ html, body {
     pointer-events: none;
 }
 
-#osd-container.idle #osd-controls,
+#osd-container.idle .osd-header,
 #osd-container.idle #osd-bottom {
     display: none;
 }
