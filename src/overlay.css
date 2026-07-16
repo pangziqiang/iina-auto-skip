@@ -1,0 +1,240 @@
+:root {
+    --osd-bg: linear-gradient(transparent, rgba(0,0,0,0.85) 40%);
+    --osd-accent: #007aff;
+    --osd-accent-dark: #0a84ff;
+    --osd-text: rgba(255,255,255,0.9);
+    --osd-text-secondary: rgba(255,255,255,0.4);
+    --osd-track-bg: rgba(255,255,255,0.12);
+    --osd-handle-border: #fff;
+    --osd-btn-bg: rgba(255,255,255,0.1);
+    --osd-btn-border: rgba(255,255,255,0.15);
+    --osd-btn-text: rgba(255,255,255,0.6);
+    --osd-save-bg: #0a84ff;
+    --osd-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    --osd-mono: "SF Mono", Monaco, monospace;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --osd-accent: #007aff;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--osd-font);
+    color: var(--osd-text);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#osd-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 10% 24px;
+    background: var(--osd-bg);
+    transition: opacity 0.5s ease;
+}
+
+#osd-container.idle {
+    opacity: 0.4;
+}
+
+#osd-container.hidden-fade {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#osd-container.idle #osd-controls,
+#osd-container.idle #osd-bottom {
+    display: none;
+}
+
+.osd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.osd-header .title {
+    font-size: 12px;
+    color: var(--osd-text-secondary);
+    letter-spacing: 1px;
+}
+
+.osd-header .hint {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+}
+
+.osd-track-area {
+    position: relative;
+    height: 44px;
+    margin-bottom: 14px;
+    cursor: pointer;
+}
+
+.osd-track {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--osd-track-bg);
+    border-radius: 2px;
+}
+
+.osd-track-fill {
+    position: absolute;
+    top: 18px;
+    height: 4px;
+    background: var(--osd-accent);
+    border-radius: 2px;
+    opacity: 0.5;
+}
+
+.osd-playhead {
+    position: absolute;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    background: var(--osd-accent);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px rgba(10,132,255,0.6);
+    pointer-events: none;
+}
+
+.osd-handle {
+    position: absolute;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    background: var(--osd-accent);
+    border: 2px solid var(--osd-handle-border);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    z-index: 2;
+}
+
+.osd-handle::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 1px;
+}
+
+.osd-handle.dragging {
+    transform: translateX(-50%) scale(1.2);
+    box-shadow: 0 0 12px rgba(10,132,255,0.5);
+}
+
+.osd-time-label {
+    position: absolute;
+    top: 32px;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--osd-accent);
+    font-family: var(--osd-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+
+.osd-time-label.dragging {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.osd-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.osd-time-info {
+    font-size: 11px;
+    color: var(--osd-text-secondary);
+    font-family: var(--osd-mono);
+}
+
+.osd-time-info .sep {
+    color: rgba(255,255,255,0.2);
+    margin: 0 4px;
+}
+
+.osd-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.osd-btn {
+    background: var(--osd-btn-bg);
+    color: var(--osd-btn-text);
+    border: 1px solid var(--osd-btn-border);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: var(--osd-font);
+    transition: background 0.15s;
+}
+
+.osd-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.osd-btn-save {
+    background: var(--osd-save-bg);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(10,132,255,0.3);
+}
+
+.osd-btn-save:hover {
+    background: #409cff;
+}
+
+.osd-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    font-size: 13px;
+    color: var(--osd-text-secondary);
+}
+
+.osd-hidden-hint {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.osd-hidden-hint.visible {
+    opacity: 1;
+}
