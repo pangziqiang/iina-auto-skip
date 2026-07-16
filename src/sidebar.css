@@ -215,6 +215,13 @@ button:active {
     transform: scale(0.98);
 }
 
+#visualBtn {
+    margin-top: 8px;
+    background-color: var(--bg-tertiary);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+
 /* Status message */
 .status-msg {
     margin-top: 8px;

@@ -1,0 +1,88 @@
+<h2>OSD 覆盖层 — 进度条布局方案</h2>
+<p class="subtitle">想像一下 OSD 覆盖在视频上时的布局，以下是一个 mockup 示意</p>
+
+<div class="mockup" style="width: 100%; max-width: 720px; margin: 1em auto; background: rgba(0,0,0,0.85); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; overflow: hidden;">
+  <div style="position: relative; padding: 40px 20px 20px; color: #fff;">
+
+    <!-- Title bar -->
+    <div style="text-align: center; font-size: 14px; font-weight: 600; color: #aaa; margin-bottom: 28px; letter-spacing: 1px;">
+      — 拖动设置跳过区间 —
+    </div>
+
+    <!-- Progress bar area -->
+    <div style="position: relative; height: 40px; margin: 0 10px 10px;">
+
+      <!-- Track background -->
+      <div style="position: absolute; top: 18px; left: 0; right: 0; height: 4px; background: #444; border-radius: 2px;"></div>
+
+      <!-- Highlighted segment (skip range) -->
+      <div style="position: absolute; top: 18px; left: 30%; right: 25%; height: 4px; background: var(--accent, #e67e22); border-radius: 2px; opacity: 0.6;"></div>
+
+      <!-- Left handle (intro end) -->
+      <div style="position: absolute; top: 8px; left: calc(30% - 12px); width: 24px; height: 24px; background: var(--accent, #e67e22); border: 2px solid #fff; border-radius: 50%; cursor: ew-resize; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; box-shadow: 0 0 8px rgba(0,0,0,0.5);">
+        ◀
+      </div>
+
+      <!-- Right handle (outro start) -->
+      <div style="position: absolute; top: 8px; left: calc(75% - 12px); width: 24px; height: 24px; background: var(--accent, #e67e22); border: 2px solid #fff; border-radius: 50%; cursor: ew-resize; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; box-shadow: 0 0 8px rgba(0,0,0,0.5);">
+        ▶
+      </div>
+
+      <!-- Time labels -->
+      <div style="position: absolute; top: 40px; left: calc(30% - 30px); width: 60px; text-align: center; font-size: 11px; color: #f0f0f0; font-variant-numeric: tabular-nums;">
+        00:01:30
+      </div>
+      <div style="position: absolute; top: 40px; left: calc(75% - 30px); width: 60px; text-align: center; font-size: 11px; color: #f0f0f0; font-variant-numeric: tabular-nums;">
+        00:43:15
+      </div>
+
+      <!-- Timeline labels -->
+      <div style="position: absolute; top: 66px; left: 0; width: 60px; text-align: center; font-size: 10px; color: #666;">
+        开始
+      </div>
+      <div style="position: absolute; top: 66px; right: 0; width: 60px; text-align: center; font-size: 10px; color: #666;">
+        结尾
+      </div>
+    </div>
+
+    <!-- Info row -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding: 0 10px;">
+      <div style="font-size: 12px; color: #888;">
+        片头跳过: <span style="color: #f0f0f0;">00:01:30</span>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        片尾跳过: <span style="color: #f0f0f0;">00:43:15</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="mock-button" style="background: #444; color: #ccc; padding: 6px 16px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer;">取消</button>
+        <button class="mock-button" style="background: var(--accent, #e67e22); color: #fff; padding: 6px 16px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer;">保存</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h3 style="margin-top: 40px;">你觉得这个布局怎么样？</h3>
+
+<div class="options">
+  <div class="option" data-choice="good" onclick="toggleSelect(this)">
+    <div class="letter">👌</div>
+    <div class="content">
+      <h3>基本满意</h3>
+      <p>布局方向没问题，可以继续细化</p>
+    </div>
+  </div>
+  <div class="option" data-choice="adjust" onclick="toggleSelect(this)">
+    <div class="letter">🔄</div>
+    <div class="content">
+      <h3>需要调整</h3>
+      <p>有一些地方想改</p>
+    </div>
+  </div>
+  <div class="option" data-choice="other" onclick="toggleSelect(this)">
+    <div class="letter">💡</div>
+    <div class="content">
+      <h3>有其他想法</h3>
+      <p>换个思路</p>
+    </div>
+  </div>
+</div>

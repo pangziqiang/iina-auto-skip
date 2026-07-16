@@ -1,0 +1,85 @@
+<h2>OSD 覆盖层 — IINA 风格配色</h2>
+<p class="subtitle">使用 IINA 原生蓝色主题 (<code style="background: rgba(10,132,255,0.15); padding: 1px 6px; border-radius: 3px; color: #0a84ff;">#0a84ff</code>)</p>
+
+<div class="mockup" style="width: 100%; max-width: 800px; margin: 1em auto; background: #1a1a2e; border-radius: 12px; overflow: hidden; position: relative; aspect-ratio: 16/9;">
+
+  <!-- Fake video content -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #16213e, #0f3460, #1a1a2e); display: flex; align-items: center; justify-content: center;">
+    <div style="width: 80px; height: 80px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 32px;">▶</div>
+  </div>
+
+  <!-- OSD overlay -->
+  <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85) 40%); padding: 40px 40px 24px;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+        拖动设置跳过区间
+      </div>
+      <div style="font-size: 11px; color: rgba(255,255,255,0.35);">
+        ESC / S 关闭
+      </div>
+    </div>
+
+    <div style="position: relative; height: 44px; margin-bottom: 14px;">
+
+      <!-- Track -->
+      <div style="position: absolute; top: 18px; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.12); border-radius: 2px;"></div>
+      <div style="position: absolute; top: 18px; left: 0; width: 55%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px 0 0 2px;"></div>
+
+      <!-- Segments -->
+      <div style="position: absolute; top: 18px; left: 0; width: 12%; height: 4px; background: rgba(10,132,255,0.3); border-radius: 2px 0 0 2px;"></div>
+      <div style="position: absolute; top: 18px; left: 12%; width: 60%; height: 4px; background: rgba(10,132,255,0.5); border-radius: 2px;"></div>
+      <div style="position: absolute; top: 18px; left: 72%; width: 28%; height: 4px; background: rgba(10,132,255,0.3); border-radius: 0 2px 2px 0;"></div>
+
+      <!-- Play head -->
+      <div style="position: absolute; top: 15px; left: 35%; width: 10px; height: 10px; background: #0a84ff; border-radius: 50%; transform: translateX(-50%); box-shadow: 0 0 6px rgba(10,132,255,0.6);"></div>
+
+      <!-- Left handle -->
+      <div style="position: absolute; top: 10px; left: 12%; width: 20px; height: 20px; background: #0a84ff; border: 2px solid #fff; border-radius: 50%; transform: translateX(-50%); cursor: ew-resize; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.4); transition: transform 0.1s;">
+        <div style="width: 6px; height: 6px; background: #fff; border-radius: 1px;"></div>
+      </div>
+
+      <!-- Right handle -->
+      <div style="position: absolute; top: 10px; left: 72%; width: 20px; height: 20px; background: #0a84ff; border: 2px solid #fff; border-radius: 50%; transform: translateX(-50%); cursor: ew-resize; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.4);">
+        <div style="width: 6px; height: 6px; background: #fff; border-radius: 1px;"></div>
+      </div>
+
+      <!-- Time labels -->
+      <div style="position: absolute; top: 32px; left: 12%; transform: translateX(-50%); font-size: 11px; color: #40a9ff; font-variant-numeric: tabular-nums; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,0.6); font-family: 'SF Mono', Monaco, monospace;">
+        00:01:30
+      </div>
+      <div style="position: absolute; top: 32px; left: 72%; transform: translateX(-50%); font-size: 11px; color: #40a9ff; font-variant-numeric: tabular-nums; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,0.6); font-family: 'SF Mono', Monaco, monospace;">
+        00:43:15
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 11px; color: rgba(255,255,255,0.4); font-family: 'SF Mono', Monaco, monospace;">
+        00:00:00
+        <span style="color: rgba(255,255,255,0.2); margin: 0 4px;">/</span>
+        00:45:00
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 5px 14px; font-size: 11px; cursor: pointer; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">取消</button>
+        <button style="background: #0a84ff; color: #fff; border: none; border-radius: 6px; padding: 5px 14px; font-size: 11px; cursor: pointer; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, sans-serif; box-shadow: 0 2px 6px rgba(10,132,255,0.3);">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="margin-top: 24px;">
+  <div class="option" data-choice="good" onclick="toggleSelect(this)">
+    <div class="letter">👌</div>
+    <div class="content">
+      <h3>蓝色 OK</h3>
+      <p>就这个方向继续</p>
+    </div>
+  </div>
+  <div class="option" data-choice="tweak" onclick="toggleSelect(this)">
+    <div class="letter">🔄</div>
+    <div class="content">
+      <h3>还想调整</h3>
+      <p>说说改哪里</p>
+    </div>
+  </div>
+</div>

@@ -22,6 +22,6 @@
   "sidebarTab": {
     "name": "自动跳过"
   },
-  "permissions": [],
+  "permissions": ["video-overlay"],
   "allowedDomains": ["*"]
 }

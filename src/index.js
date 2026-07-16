@@ -38,8 +38,12 @@ function toggleOverlay() {
 
 function showOverlay() {
   const duration = parseFloat(mpv.getString("duration"))
-  overlay.showFile("src/overlay.html")
+  overlay.loadFile("src/overlay.html")
+  overlay.setClickable(true)
+  overlayVisible = true
+  startOverlayTimeSync()
   setTimeout(() => {
+    overlay.show()
     overlay.postMessage(OverlayEvent.INIT, {
       duration: isNaN(duration) || duration <= 0 ? 0 : parseInt(duration, 10),
       introDuration: config.introDuration,
@@ -47,12 +51,10 @@ function showOverlay() {
       currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0
     })
   }, 200)
-  overlayVisible = true
-  startOverlayTimeSync()
 }
 
 function hideOverlay() {
-  overlay.hideFile()
+  overlay.hide()
   overlayVisible = false
   stopOverlayTimeSync()
 }
