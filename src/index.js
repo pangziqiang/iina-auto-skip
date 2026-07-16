@@ -1,4 +1,4 @@
-const { mpv, menu, input, preferences, sidebar, event, console } = iina;
+const { mpv, menu, input, preferences, sidebar, event, console, overlay } = iina;
 
 const PluginEvent = {
   INIT: 'auto-skip-init',
@@ -12,10 +12,80 @@ const states = {
   skipInProgress: false
 }
 
+const OverlayEvent = {
+  INIT: 'overlay-init',
+  SEEK: 'overlay-seek',
+  SAVE: 'overlay-save',
+  HIDE: 'overlay-hide',
+  TIME: 'overlay-time'
+}
+
 let config = {
   enabled: false,
   introDuration: 0,
   outroDuration: 0
+}
+
+let overlayVisible = false
+
+function toggleOverlay() {
+  if (overlayVisible) {
+    hideOverlay()
+  } else {
+    showOverlay()
+  }
+}
+
+function showOverlay() {
+  const duration = parseFloat(mpv.getString("duration"))
+  overlay.showFile("src/overlay.html")
+  setTimeout(() => {
+    overlay.postMessage(OverlayEvent.INIT, {
+      duration: isNaN(duration) || duration <= 0 ? 0 : parseInt(duration, 10),
+      introDuration: config.introDuration,
+      outroDuration: config.outroDuration,
+      currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0
+    })
+  }, 200)
+  overlayVisible = true
+  startOverlayTimeSync()
+}
+
+function hideOverlay() {
+  overlay.hideFile()
+  overlayVisible = false
+  stopOverlayTimeSync()
+}
+
+let overlayTimeSyncInterval = null
+
+function startOverlayTimeSync() {
+  stopOverlayTimeSync()
+  overlayTimeSyncInterval = setInterval(() => {
+    if (!overlayVisible) { stopOverlayTimeSync(); return }
+    const pos = parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0
+    overlay.postMessage(OverlayEvent.TIME, pos)
+  }, 500)
+}
+
+function stopOverlayTimeSync() {
+  if (overlayTimeSyncInterval) {
+    clearInterval(overlayTimeSyncInterval)
+    overlayTimeSyncInterval = null
+  }
+}
+
+function overlaySeek(time) {
+  if (time < 0) {
+    return
+  }
+  mpv.setProperty("time-pos", time)
+}
+
+function overlaySave(newConfig) {
+  saveConfig(newConfig)
+  addLog(`可视化设置：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
+  hideOverlay()
 }
 
 function resetSkipFlag() {
@@ -41,7 +111,13 @@ function registerMenuItem() {
   preferences.sync();
 
   menu.addItem(
-    menu.item("自动跳过", () => states.sidebarVisible ? sidebar.hide() : sidebar.show(), options)
+    menu.item("自动跳过", () => {
+      if (overlayVisible) {
+        hideOverlay()
+      } else {
+        states.sidebarVisible ? sidebar.hide() : sidebar.show()
+      }
+    }, options)
   );
 }
 
@@ -135,6 +211,10 @@ event.on("iina.window-loaded", () => {
   sidebar.onMessage(PluginEvent.SAVE, (newConfig) => {
     saveConfig(newConfig);
   });
+
+  overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
+  overlay.onMessage(OverlayEvent.SAVE, overlaySave);
+  overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
 
   registerMenuItem();
 
