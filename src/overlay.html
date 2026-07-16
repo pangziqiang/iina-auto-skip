@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+    <div id="osd-container" class="idle">
+        <div class="osd-header" id="osd-controls">
+            <span class="title">拖动设置跳过区间</span>
+            <span class="hint">ESC / S 关闭</span>
+        </div>
+
+        <div class="osd-track-area" id="osdTrackArea">
+            <div class="osd-track" id="osdTrack"></div>
+            <div class="osd-track-fill" id="osdTrackFill"></div>
+            <div class="osd-playhead" id="osdPlayhead"></div>
+            <div class="osd-handle" id="osdHandleIntro"></div>
+            <div class="osd-handle" id="osdHandleOutro"></div>
+            <div class="osd-time-label" id="osdLabelIntro">00:00:00</div>
+            <div class="osd-time-label" id="osdLabelOutro">00:00:00</div>
+        </div>
+
+        <div class="osd-bottom" id="osd-bottom">
+            <div class="osd-time-info">
+                <span id="osdCurrentTime">00:00:00</span>
+                <span class="sep">/</span>
+                <span id="osdDuration">00:00:00</span>
+            </div>
+            <div class="osd-btns" id="osd-controls">
+                <button class="osd-btn" id="osdBtnCancel">取消</button>
+                <button class="osd-btn osd-btn-save" id="osdBtnSave">保存</button>
+            </div>
+        </div>
+
+        <div class="osd-empty-state" id="osdEmpty" style="display:none">暂无视频</div>
+    </div>
+
+    <div class="osd-hidden-hint" id="osdHiddenHint">鼠标移入即可调整</div>
+
+    <script src="overlay.js"></script>
+</body>
+</html>
