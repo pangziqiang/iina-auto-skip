@@ -127,6 +127,14 @@ function overlayResume() {
 function overlaySave(newConfig) {
   saveConfig(newConfig)
   addLog(`可视化设置：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
+  if (states.sidebarVisible) {
+    sidebar.postMessage(PluginEvent.INIT, {
+      enabled: config.enabled,
+      introDuration: config.introDuration,
+      outroDuration: config.outroDuration,
+      autoFocus: preferences.get("autoFocus") !== false
+    });
+  }
   hideOverlay()
 }
 
