@@ -1,7 +1,7 @@
 const Config = {
   IDLE_TIMEOUT: 3000,
   HIDDEN_TIMEOUT: 8000,
-  SEEK_THROTTLE: 16
+  SEEK_THROTTLE: 8
 }
 
 const els = {
@@ -31,6 +31,7 @@ let introPct = 0
 let outroPct = 0
 let currentPos = 0
 let enabled = false
+let overlayKey = 'v'
 let idleTimer = null
 let hiddenTimer = null
 let draggingHandle = null
@@ -71,9 +72,6 @@ function resetIdleTimer() {
 }
 
 function updateUI() {
-  const trackLeft = els.trackArea.getBoundingClientRect().left
-  const trackWidth = els.trackArea.clientWidth
-
   const playPct = (currentPos / duration) * 100 || 0
   els.playhead.style.left = `${playPct}%`
 
@@ -99,7 +97,6 @@ function pctToTime(pct) {
 }
 
 function handleDragStart(e, handleType) {
-  iina.postMessage('overlay-pause', null)
   draggingHandle = handleType
   const handle = handleType === 'intro' ? els.handleIntro : els.handleOutro
   handle.classList.add('dragging')
@@ -149,6 +146,7 @@ function init(config) {
   introTime = config.introDuration || 0
   outroTime = duration - (config.outroDuration || 0)
   enabled = config.enabled === true
+  if (config.overlayKey) overlayKey = config.overlayKey
 
   if (!duration || duration < 10) {
     els.empty.style.display = 'flex'
@@ -174,9 +172,9 @@ els.trackArea.addEventListener('mousedown', (e) => {
   const distIntro = Math.abs(clickPct - introPct)
   const distOutro = Math.abs(clickPct - outroPct)
 
-  if (distIntro < distOutro && distIntro < 5) {
+  if (distIntro < distOutro) {
     handleDragStart(e, 'intro')
-  } else if (distOutro < 5) {
+  } else {
     handleDragStart(e, 'outro')
   }
 })
@@ -195,9 +193,9 @@ els.trackArea.addEventListener('touchstart', (e) => {
   const distIntro = Math.abs(touchPct - introPct)
   const distOutro = Math.abs(touchPct - outroPct)
 
-  if (distIntro < distOutro && distIntro < 5) {
+  if (distIntro < distOutro) {
     handleDragStart(e, 'intro')
-  } else if (distOutro < 5) {
+  } else {
     handleDragStart(e, 'outro')
   }
 }, { passive: true })
@@ -210,6 +208,12 @@ document.addEventListener('touchmove', (e) => {
 }, { passive: true })
 
 document.addEventListener('touchend', handleDragEnd)
+
+// Prevent double-click from reaching IINA window manager
+document.addEventListener('dblclick', (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+}, true)
 
 // Idle timer on mouse activity
 els.container.addEventListener('mouseenter', resetIdleTimer)
@@ -231,7 +235,7 @@ els.btnSave.addEventListener('click', () => {
 
 // Keyboard
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' || e.key === 's' || e.key === 'S') {
+  if (e.key === 'Escape' || e.key.toLowerCase() === overlayKey.toLowerCase()) {
     if (!e.repeat) iina.postMessage('overlay-hide', null)
   }
   if (e.key === 'Enter') {

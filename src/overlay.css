@@ -85,6 +85,14 @@ html, body {
     cursor: pointer;
 }
 
+.osd-track-area > * {
+    pointer-events: none;
+}
+
+.osd-track-area > .osd-handle {
+    pointer-events: auto;
+}
+
 .osd-track {
     position: absolute;
     top: 18px;

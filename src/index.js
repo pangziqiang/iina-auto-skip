@@ -17,7 +17,9 @@ const OverlayEvent = {
   SEEK: 'overlay-seek',
   SAVE: 'overlay-save',
   HIDE: 'overlay-hide',
-  TIME: 'overlay-time'
+  TIME: 'overlay-time',
+  PAUSE: 'overlay-pause',
+  RESUME: 'overlay-resume'
 }
 
 let config = {
@@ -39,8 +41,8 @@ function toggleOverlay() {
 
 function registerOverlayHandlers() {
   overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
-  overlay.onMessage('overlay-pause', overlayPause);
-  overlay.onMessage('overlay-resume', overlayResume);
+  overlay.onMessage(OverlayEvent.PAUSE, overlayPause);
+  overlay.onMessage(OverlayEvent.RESUME, overlayResume);
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
 }
@@ -71,7 +73,8 @@ function showOverlay() {
         introDuration: config.introDuration,
         outroDuration: config.outroDuration,
         currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0,
-        enabled: config.enabled
+        enabled: config.enabled,
+        overlayKey: preferences.get("overlayKeybind") || "v"
       })
     } catch (e) {
       console.log("overlay show/postMessage error: " + e.message)
@@ -107,7 +110,9 @@ function stopOverlayTimeSync() {
 }
 
 function overlaySeek(time) {
-  mpv.command("seek", [time.toString(), "absolute"])
+  mpv.set("time-pos", time)
+  mpv.set("pause", false)
+  mpv.set("pause", true)
 }
 
 function overlayPause() {
