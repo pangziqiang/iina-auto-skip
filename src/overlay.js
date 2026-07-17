@@ -169,14 +169,22 @@ function init(config) {
 els.trackArea.addEventListener('mousedown', (e) => {
   const rect = els.trackArea.getBoundingClientRect()
   const clickPct = ((e.clientX - rect.left) / rect.width) * 100
+  const clickTime = pctToTime(clickPct)
   const distIntro = Math.abs(clickPct - introPct)
   const distOutro = Math.abs(clickPct - outroPct)
 
   if (distIntro < distOutro) {
+    introTime = Math.min(clickTime, outroTime - 1)
+    introPct = (introTime / duration) * 100
+    iina.postMessage('overlay-seek', introTime)
     handleDragStart(e, 'intro')
   } else {
+    outroTime = Math.max(clickTime, introTime + 1)
+    outroPct = (outroTime / duration) * 100
+    iina.postMessage('overlay-seek', outroTime)
     handleDragStart(e, 'outro')
   }
+  updateUI()
 })
 
 document.addEventListener('mousemove', (e) => {
@@ -190,14 +198,22 @@ els.trackArea.addEventListener('touchstart', (e) => {
   const touch = e.touches[0]
   const rect = els.trackArea.getBoundingClientRect()
   const touchPct = ((touch.clientX - rect.left) / rect.width) * 100
+  const touchTime = pctToTime(touchPct)
   const distIntro = Math.abs(touchPct - introPct)
   const distOutro = Math.abs(touchPct - outroPct)
 
   if (distIntro < distOutro) {
+    introTime = Math.min(touchTime, outroTime - 1)
+    introPct = (introTime / duration) * 100
+    iina.postMessage('overlay-seek', introTime)
     handleDragStart(e, 'intro')
   } else {
+    outroTime = Math.max(touchTime, introTime + 1)
+    outroPct = (outroTime / duration) * 100
+    iina.postMessage('overlay-seek', outroTime)
     handleDragStart(e, 'outro')
   }
+  updateUI()
 }, { passive: true })
 
 document.addEventListener('touchmove', (e) => {
