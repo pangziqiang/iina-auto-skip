@@ -44,6 +44,7 @@ function registerOverlayHandlers() {
   overlay.onMessage(OverlayEvent.PAUSE, overlayPause);
   overlay.onMessage(OverlayEvent.RESUME, overlayResume);
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
+  overlay.onMessage('overlay-save-keep', overlaySaveKeep);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
 }
 
@@ -136,6 +137,19 @@ function overlaySave(newConfig) {
     });
   }
   hideOverlay()
+}
+
+function overlaySaveKeep(newConfig) {
+  saveConfig(newConfig)
+  addLog(`已保存：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
+  if (states.sidebarVisible) {
+    sidebar.postMessage(PluginEvent.INIT, {
+      enabled: config.enabled,
+      introDuration: config.introDuration,
+      outroDuration: config.outroDuration,
+      autoFocus: preferences.get("autoFocus") !== false
+    });
+  }
 }
 
 function resetSkipFlag() {

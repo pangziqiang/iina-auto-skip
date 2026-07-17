@@ -249,6 +249,15 @@ els.btnSave.addEventListener('click', () => {
   })
 })
 
+els.btnSaveKeep = document.getElementById('osdBtnSaveKeep')
+els.btnSaveKeep.addEventListener('click', () => {
+  iina.postMessage('overlay-save-keep', {
+    enabled: enabled,
+    introDuration: introTime,
+    outroDuration: duration - outroTime
+  })
+})
+
 // Keyboard
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' || e.key.toLowerCase() === overlayKey.toLowerCase()) {
