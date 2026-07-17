@@ -78,8 +78,18 @@ function loadCaptureKeys() {
 }
 
 function registerCaptureKeys() {
-  input.onKeyDown(captureIntroKey, () => { captureIntro(); return true }, input.PRIORITY_LOW)
-  input.onKeyDown(captureOutroKey, () => { captureOutro(); return true }, input.PRIORITY_LOW)
+  const introOpts = {};
+  const outroOpts = {};
+  if (captureIntroKey) {
+    const kc = input.normalizeKeyCode(captureIntroKey);
+    if (!input.getAllKeyBindings()[kc]) introOpts.keyBinding = captureIntroKey;
+  }
+  if (captureOutroKey) {
+    const kc = input.normalizeKeyCode(captureOutroKey);
+    if (!input.getAllKeyBindings()[kc]) outroOpts.keyBinding = captureOutroKey;
+  }
+  menu.addItem(menu.item("捕获片头", () => captureIntro(), introOpts));
+  menu.addItem(menu.item("捕获片尾", () => captureOutro(), outroOpts));
 }
 
 function toggleOverlay() {
