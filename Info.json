@@ -13,8 +13,6 @@
   "preferenceDefaults": {
     "keybind": "s",
     "overlayKeybind": "v",
-    "captureIntroKey": "I",
-    "captureOutroKey": "O",
     "autoFocus": true,
     "skipConfig": {
       "enabled": false,
