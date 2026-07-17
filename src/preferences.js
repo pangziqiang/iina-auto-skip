@@ -20,6 +20,7 @@ const SPECIAL_KEYS = new Set([
 let conflictingBind = null;
 let saveKeybindTimeout = null;
 let saveAutoFocusTimeout = null;
+let saveCaptureTimeout = null;
 
 function sanitizeInput(e, sanitizeFn) {
   const input = e.target;
@@ -193,13 +194,12 @@ const captureOutroInfo = document.getElementById('captureOutroInfo');
   const info = i === 0 ? captureIntroInfo : captureOutroInfo
   const key = i === 0 ? 'captureIntroKey' : 'captureOutroKey'
   input.addEventListener('input', () => {
-    clearTimeout(saveKeybindTimeout);
+    clearTimeout(saveCaptureTimeout);
     const clean = sanitizeInput({ target: input, value: input.value }, sanitizeKeybind)
     info.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
     info.className = `info-box ${clean ? 'valid' : 'info'}`;
-    saveKeybindTimeout = setTimeout(() => {
-      iina.preferences.set(key, clean);
-      saveKeybindTimeout = null;
+    saveCaptureTimeout = setTimeout(() => {
+      iina.preferences.set(key, normalizeKeybind(clean));
     }, 200);
   });
   iina.preferences.get(key, value => {
