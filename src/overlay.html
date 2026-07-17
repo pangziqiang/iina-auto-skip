@@ -6,20 +6,22 @@
     <link rel="stylesheet" href="overlay.css">
 </head>
 <body>
-    <div id="osd-container" class="idle">
-        <div class="osd-header">
-            <span class="title">拖动设置跳过区间</span>
-            <span class="hint">ESC / S 关闭</span>
+    <div id="osd-container">
+        <div class="osd-header" data-clickable>
+            <span class="title">拖动 <b style="color:#40a9ff">I(片头)</b> 和 <b style="color:#ffb340">O(片尾)</b> 设置跳过区间</span>
+            <span class="hint">S 关闭</span>
         </div>
 
-        <div class="osd-track-area" id="osdTrackArea">
+        <div class="osd-track-area" id="osdTrackArea" data-clickable>
             <div class="osd-track" id="osdTrack"></div>
             <div class="osd-track-fill" id="osdTrackFill"></div>
             <div class="osd-playhead" id="osdPlayhead"></div>
-            <div class="osd-handle" id="osdHandleIntro"></div>
-            <div class="osd-handle" id="osdHandleOutro"></div>
-            <div class="osd-time-label" id="osdLabelIntro">00:00:00</div>
-            <div class="osd-time-label" id="osdLabelOutro">00:00:00</div>
+            <div class="osd-handle osd-handle-intro" id="osdHandleIntro" data-clickable></div>
+            <div class="osd-handle osd-handle-outro" id="osdHandleOutro" data-clickable></div>
+            <div class="osd-time-label osd-label-intro" id="osdLabelIntro">00:00:00</div>
+            <div class="osd-time-label osd-label-outro" id="osdLabelOutro">00:00:00</div>
+            <div class="osd-handle-label" id="osdLabelIntroTag">片头</div>
+            <div class="osd-handle-label" id="osdLabelOutroTag">片尾</div>
         </div>
 
         <div class="osd-bottom" id="osd-bottom">
@@ -29,12 +31,12 @@
                 <span id="osdDuration">00:00:00</span>
             </div>
             <div class="osd-btns">
-                <button class="osd-btn" id="osdBtnCancel">取消</button>
-                <button class="osd-btn osd-btn-save" id="osdBtnSave">保存</button>
+                <button class="osd-btn" id="osdBtnCancel" data-clickable>取消</button>
+                <button class="osd-btn osd-btn-save" id="osdBtnSave" data-clickable>保存</button>
             </div>
         </div>
 
-        <div class="osd-empty-state" id="osdEmpty" style="display:none">暂无视频</div>
+        <div class="osd-empty-state" id="osdEmpty" style="display:none" data-clickable>暂无视频</div>
     </div>
 
     <div class="osd-hidden-hint" id="osdHiddenHint">鼠标移入即可调整</div>

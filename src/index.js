@@ -27,6 +27,7 @@ let config = {
 }
 
 let overlayVisible = false
+let overlayInitPos = 0
 
 function toggleOverlay() {
   if (overlayVisible) {
@@ -50,10 +51,10 @@ function showOverlay() {
     return
   }
   const duration = parseFloat(mpv.getString("duration"))
+  overlayInitPos = parseFloat(mpv.getString("time-pos")) || 0
   mpv.set("pause", true)
   try {
     overlay.loadFile("src/overlay.html")
-    registerOverlayHandlers()
     overlay.setClickable(true)
   } catch (e) {
     console.log("overlay setup error: " + e.message)
@@ -63,12 +64,14 @@ function showOverlay() {
   startOverlayTimeSync()
   setTimeout(() => {
     try {
+      registerOverlayHandlers()
       overlay.show()
       overlay.postMessage(OverlayEvent.INIT, {
         duration: isNaN(duration) || duration <= 0 ? 0 : parseInt(duration, 10),
         introDuration: config.introDuration,
         outroDuration: config.outroDuration,
-        currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0
+        currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0,
+        enabled: config.enabled
       })
     } catch (e) {
       console.log("overlay show/postMessage error: " + e.message)
@@ -80,6 +83,9 @@ function hideOverlay() {
   overlay.hide()
   overlayVisible = false
   stopOverlayTimeSync()
+  if (overlayInitPos > 0) {
+    mpv.command("seek", [overlayInitPos.toString(), "absolute"])
+  }
 }
 
 let overlayTimeSyncInterval = null
@@ -101,7 +107,7 @@ function stopOverlayTimeSync() {
 }
 
 function overlaySeek(time) {
-  mpv.set("time-pos", time)
+  mpv.command("seek", [time.toString(), "absolute"])
 }
 
 function overlayPause() {
@@ -109,7 +115,7 @@ function overlayPause() {
 }
 
 function overlayResume() {
-  mpv.set("pause", false)
+  // not used - video stays paused in setting mode
 }
 
 function overlaySave(newConfig) {
@@ -177,7 +183,7 @@ function loadConfig() {
 
 function saveConfig(newConfig) {
   config = {
-    enabled: !!newConfig.enabled,
+    enabled: newConfig.hasOwnProperty('enabled') ? !!newConfig.enabled : config.enabled,
     introDuration: Math.max(0, parseInt(newConfig.introDuration, 10) || 0),
     outroDuration: Math.max(0, parseInt(newConfig.outroDuration, 10) || 0)
   }

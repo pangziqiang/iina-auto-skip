@@ -1,7 +1,7 @@
 const Config = {
   IDLE_TIMEOUT: 3000,
   HIDDEN_TIMEOUT: 8000,
-  SEEK_THROTTLE: 100
+  SEEK_THROTTLE: 16
 }
 
 const els = {
@@ -19,7 +19,9 @@ const els = {
   btnSave: document.getElementById('osdBtnSave'),
   btnCancel: document.getElementById('osdBtnCancel'),
   empty: document.getElementById('osdEmpty'),
-  hiddenHint: document.getElementById('osdHiddenHint')
+  hiddenHint: document.getElementById('osdHiddenHint'),
+  labelIntroTag: document.getElementById('osdLabelIntroTag'),
+  labelOutroTag: document.getElementById('osdLabelOutroTag')
 }
 
 let duration = 0
@@ -28,6 +30,7 @@ let outroTime = 0
 let introPct = 0
 let outroPct = 0
 let currentPos = 0
+let enabled = false
 let idleTimer = null
 let hiddenTimer = null
 let draggingHandle = null
@@ -77,10 +80,12 @@ function updateUI() {
   els.labelIntro.textContent = formatTime(introTime)
   els.labelIntro.style.left = `${introPct}%`
   els.handleIntro.style.left = `${introPct}%`
+  els.labelIntroTag.style.left = `${introPct}%`
 
   els.labelOutro.textContent = formatTime(outroTime)
   els.labelOutro.style.left = `${outroPct}%`
   els.handleOutro.style.left = `${outroPct}%`
+  els.labelOutroTag.style.left = `${outroPct}%`
 
   els.trackFill.style.left = `${introPct}%`
   els.trackFill.style.width = `${outroPct - introPct}%`
@@ -135,7 +140,6 @@ function handleDragEnd() {
   const label = draggingHandle === 'intro' ? els.labelIntro : els.labelOutro
   label.classList.remove('dragging')
 
-  iina.postMessage('overlay-resume', null)
   draggingHandle = null
   resetIdleTimer()
 }
@@ -143,7 +147,8 @@ function handleDragEnd() {
 function init(config) {
   duration = config.duration || 0
   introTime = config.introDuration || 0
-  outroTime = config.outroDuration || 0
+  outroTime = duration - (config.outroDuration || 0)
+  enabled = config.enabled === true
 
   if (!duration || duration < 10) {
     els.empty.style.display = 'flex'
@@ -153,7 +158,7 @@ function init(config) {
   }
 
   introPct = (introTime / duration) * 100
-  outroPct = ((duration - outroTime) / duration) * 100
+  outroPct = (outroTime / duration) * 100
   if (outroPct <= introPct) outroPct = introPct + 1
   if (outroPct > 100) outroPct = 100
 
@@ -218,8 +223,9 @@ els.btnCancel.addEventListener('click', () => {
 
 els.btnSave.addEventListener('click', () => {
   iina.postMessage('overlay-save', {
+    enabled: enabled,
     introDuration: introTime,
-    outroDuration: outroTime
+    outroDuration: duration - outroTime
   })
 })
 

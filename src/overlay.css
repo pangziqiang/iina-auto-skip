@@ -133,17 +133,55 @@ html, body {
     z-index: 2;
 }
 
-.osd-handle::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: #fff;
-    border-radius: 1px;
+.osd-handle-intro {
+    background: #007aff;
+}
+
+.osd-handle-outro {
+    background: #ff9500;
+}
+
+.osd-handle-intro::after {
+    content: 'I';
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.osd-handle-outro::after {
+    content: 'O';
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
 }
 
 .osd-handle.dragging {
-    transform: translateX(-50%) scale(1.2);
-    box-shadow: 0 0 12px rgba(10,132,255,0.5);
+    transform: translateX(-50%) scale(1.3);
+    box-shadow: 0 0 16px rgba(10,132,255,0.6);
+}
+
+.osd-handle-outro.dragging {
+    box-shadow: 0 0 16px rgba(255,149,0,0.6);
+}
+
+.osd-label-intro {
+    color: #40a9ff;
+}
+
+.osd-label-outro {
+    color: #ffb340;
+}
+
+.osd-handle-label {
+    position: absolute;
+    top: 52px;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 .osd-time-label {
@@ -165,11 +203,14 @@ html, body {
 
 .osd-bottom {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 12px;
 }
 
 .osd-time-info {
+    position: absolute;
+    left: 0;
     font-size: 11px;
     color: var(--osd-text-secondary);
     font-family: var(--osd-mono);
