@@ -18,8 +18,7 @@ const OverlayEvent = {
   SAVE: 'overlay-save',
   HIDE: 'overlay-hide',
   TIME: 'overlay-time',
-  PAUSE: 'overlay-pause',
-  RESUME: 'overlay-resume'
+  PAUSE: 'overlay-pause'
 }
 
 let config = {
@@ -30,6 +29,7 @@ let config = {
 
 let overlayVisible = false
 let overlayInitPos = 0
+let overlayWasPlaying = false
 
 function toggleOverlay() {
   if (overlayVisible) {
@@ -42,7 +42,6 @@ function toggleOverlay() {
 function registerOverlayHandlers() {
   overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
   overlay.onMessage(OverlayEvent.PAUSE, overlayPause);
-  overlay.onMessage(OverlayEvent.RESUME, overlayResume);
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
   overlay.onMessage('overlay-save-keep', overlaySaveKeep);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
@@ -55,6 +54,7 @@ function showOverlay() {
   }
   const duration = parseFloat(mpv.getString("duration"))
   overlayInitPos = parseFloat(mpv.getString("time-pos")) || 0
+  overlayWasPlaying = !mpv.getFlag("pause")
   mpv.set("pause", true)
   try {
     overlay.loadFile("src/overlay.html")
@@ -66,6 +66,7 @@ function showOverlay() {
   overlayVisible = true
   startOverlayTimeSync()
   setTimeout(() => {
+    if (!overlayVisible) return
     try {
       registerOverlayHandlers()
       overlay.show()
@@ -75,7 +76,7 @@ function showOverlay() {
         outroDuration: config.outroDuration,
         currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0,
         enabled: config.enabled,
-        overlayKey: preferences.get("overlayKeybind") || "v"
+        overlayKey: preferences.get("overlayKeybind") || ""
       })
     } catch (e) {
       console.log("overlay show/postMessage error: " + e.message)
@@ -89,6 +90,9 @@ function hideOverlay() {
   stopOverlayTimeSync()
   if (overlayInitPos > 0) {
     mpv.command("seek", [overlayInitPos.toString(), "absolute"])
+  }
+  if (overlayWasPlaying) {
+    mpv.set("pause", false)
   }
 }
 
@@ -121,9 +125,7 @@ function overlayPause() {
   mpv.set("pause", true)
 }
 
-function overlayResume() {
-  // not used - video stays paused in setting mode
-}
+
 
 function overlaySave(newConfig) {
   saveConfig(newConfig)
@@ -180,7 +182,7 @@ function registerMenuItem() {
     }, options)
   );
 
-  const overlayKeybind = preferences.get("overlayKeybind") || "S";
+  const overlayKeybind = preferences.get("overlayKeybind");
   const overlayOptions = {};
   if (overlayKeybind) {
     const kc = input.normalizeKeyCode(overlayKeybind);

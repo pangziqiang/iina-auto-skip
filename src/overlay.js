@@ -152,6 +152,7 @@ function init(config) {
     els.empty.style.display = 'flex'
     els.empty.textContent = '视频过短'
     els.btnSave.disabled = true
+    if (els.btnSaveKeep) els.btnSaveKeep.disabled = true
     return
   }
 
