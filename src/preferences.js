@@ -183,3 +183,29 @@ iina.preferences.get("overlayKeybind", value => {
   overlayValidationInfo.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
   overlayValidationInfo.className = `info-box ${clean ? 'valid' : 'info'}`;
 });
+
+const captureIntroInput = document.getElementById('captureIntroInput');
+const captureIntroInfo = document.getElementById('captureIntroInfo');
+const captureOutroInput = document.getElementById('captureOutroInput');
+const captureOutroInfo = document.getElementById('captureOutroInfo');
+
+[captureIntroInput, captureOutroInput].forEach((input, i) => {
+  const info = i === 0 ? captureIntroInfo : captureOutroInfo
+  const key = i === 0 ? 'captureIntroKey' : 'captureOutroKey'
+  input.addEventListener('input', () => {
+    clearTimeout(saveKeybindTimeout);
+    const clean = sanitizeInput({ target: input, value: input.value }, sanitizeKeybind)
+    info.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
+    info.className = `info-box ${clean ? 'valid' : 'info'}`;
+    saveKeybindTimeout = setTimeout(() => {
+      iina.preferences.set(key, clean);
+      saveKeybindTimeout = null;
+    }, 200);
+  });
+  iina.preferences.get(key, value => {
+    const clean = sanitizeKeybind(value || "")
+    input.value = clean;
+    info.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
+    info.className = `info-box ${clean ? 'valid' : 'info'}`;
+  });
+});
