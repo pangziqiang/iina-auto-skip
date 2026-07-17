@@ -111,8 +111,6 @@ function stopOverlayTimeSync() {
 
 function overlaySeek(time) {
   mpv.set("time-pos", time)
-  mpv.set("pause", false)
-  mpv.set("pause", true)
 }
 
 function overlayPause() {
@@ -271,6 +269,10 @@ event.on("iina.window-loaded", () => {
   });
 
   registerMenuItem();
+
+  input.onKeyDown('ESC', () => {
+    if (overlayVisible) { hideOverlay(); return true }
+  }, input.PRIORITY_HIGH);
 
   console.log("自动跳过 插件已加载");
 });

@@ -56,13 +56,25 @@ html, body {
 }
 
 #osd-container.idle .osd-header,
-#osd-container.idle #osd-bottom {
+#osd-container.idle #osd-bottom,
+#osd-container.idle .osd-center-hint {
     display: none;
+}
+
+.osd-center-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 2px;
+    pointer-events: none;
 }
 
 .osd-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 16px;
 }
@@ -71,11 +83,6 @@ html, body {
     font-size: 12px;
     color: var(--osd-text-secondary);
     letter-spacing: 1px;
-}
-
-.osd-header .hint {
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
 }
 
 .osd-track-area {
