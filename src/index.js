@@ -111,6 +111,9 @@ function stopOverlayTimeSync() {
 
 function overlaySeek(time) {
   mpv.set("time-pos", time)
+  if (overlayVisible) {
+    overlay.postMessage(OverlayEvent.TIME, time)
+  }
 }
 
 function overlayPause() {
@@ -151,11 +154,7 @@ function registerMenuItem() {
 
   menu.addItem(
     menu.item("自动跳过", () => {
-      if (overlayVisible) {
-        hideOverlay()
-      } else {
-        states.sidebarVisible ? sidebar.hide() : sidebar.show()
-      }
+      states.sidebarVisible ? sidebar.hide() : sidebar.show()
     }, options)
   );
 
@@ -169,7 +168,7 @@ function registerMenuItem() {
   }
 
   menu.addItem(
-    menu.item("可视化设置", () => showOverlay(), overlayOptions)
+    menu.item("可视化设置", () => { overlayVisible ? hideOverlay() : showOverlay() }, overlayOptions)
   );
 }
 
