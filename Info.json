@@ -12,6 +12,7 @@
   "preferencesPage": "src/preferences.html",
   "preferenceDefaults": {
     "keybind": "s",
+    "overlayKeybind": "v",
     "autoFocus": true,
     "skipConfig": {
       "enabled": false,

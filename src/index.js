@@ -36,21 +36,44 @@ function toggleOverlay() {
   }
 }
 
+function registerOverlayHandlers() {
+  overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
+  overlay.onMessage('overlay-pause', overlayPause);
+  overlay.onMessage('overlay-resume', overlayResume);
+  overlay.onMessage(OverlayEvent.SAVE, overlaySave);
+  overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
+}
+
 function showOverlay() {
+  if (typeof overlay === 'undefined') {
+    console.log("ERROR: overlay API is undefined")
+    return
+  }
   const duration = parseFloat(mpv.getString("duration"))
-  overlay.loadFile("src/overlay.html")
-  overlay.setClickable(true)
+  mpv.set("pause", true)
+  try {
+    overlay.loadFile("src/overlay.html")
+    registerOverlayHandlers()
+    overlay.setClickable(true)
+  } catch (e) {
+    console.log("overlay setup error: " + e.message)
+    return
+  }
   overlayVisible = true
   startOverlayTimeSync()
   setTimeout(() => {
-    overlay.show()
-    overlay.postMessage(OverlayEvent.INIT, {
-      duration: isNaN(duration) || duration <= 0 ? 0 : parseInt(duration, 10),
-      introDuration: config.introDuration,
-      outroDuration: config.outroDuration,
-      currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0
-    })
-  }, 200)
+    try {
+      overlay.show()
+      overlay.postMessage(OverlayEvent.INIT, {
+        duration: isNaN(duration) || duration <= 0 ? 0 : parseInt(duration, 10),
+        introDuration: config.introDuration,
+        outroDuration: config.outroDuration,
+        currentPos: parseInt(parseFloat(mpv.getString("time-pos")), 10) || 0
+      })
+    } catch (e) {
+      console.log("overlay show/postMessage error: " + e.message)
+    }
+  }, 500)
 }
 
 function hideOverlay() {
@@ -78,15 +101,15 @@ function stopOverlayTimeSync() {
 }
 
 function overlaySeek(time) {
-  mpv.setProperty("time-pos", time)
+  mpv.set("time-pos", time)
 }
 
 function overlayPause() {
-  mpv.setProperty("pause", true)
+  mpv.set("pause", true)
 }
 
 function overlayResume() {
-  mpv.setProperty("pause", false)
+  mpv.set("pause", false)
 }
 
 function overlaySave(newConfig) {
@@ -125,6 +148,19 @@ function registerMenuItem() {
         states.sidebarVisible ? sidebar.hide() : sidebar.show()
       }
     }, options)
+  );
+
+  const overlayKeybind = preferences.get("overlayKeybind") || "S";
+  const overlayOptions = {};
+  if (overlayKeybind) {
+    const kc = input.normalizeKeyCode(overlayKeybind);
+    if (!input.getAllKeyBindings()[kc]) {
+      overlayOptions.keyBinding = overlayKeybind;
+    }
+  }
+
+  menu.addItem(
+    menu.item("可视化设置", () => showOverlay(), overlayOptions)
   );
 }
 
@@ -222,12 +258,6 @@ event.on("iina.window-loaded", () => {
   sidebar.onMessage('overlay-open', () => {
     showOverlay();
   });
-
-  overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
-  overlay.onMessage('overlay-pause', overlayPause);
-  overlay.onMessage('overlay-resume', overlayResume);
-  overlay.onMessage(OverlayEvent.SAVE, overlaySave);
-  overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
 
   registerMenuItem();
 

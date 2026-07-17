@@ -1,5 +1,7 @@
 const keybindInput = document.getElementById('keybindInput');
 const validationInfo = document.getElementById('validationInfo');
+const overlayKeybindInput = document.getElementById('overlayKeybindInput');
+const overlayValidationInfo = document.getElementById('overlayValidationInfo');
 const autoFocusToggle = document.getElementById('autoFocusToggle');
 
 const MODIFIERS = {
@@ -158,4 +160,26 @@ iina.preferences.get("keybind", keybind => {
 
 iina.preferences.get("autoFocus", value => {
   autoFocusToggle.checked = value !== false;
+});
+
+// Overlay keybind
+overlayKeybindInput.addEventListener('input', e => {
+  clearTimeout(saveKeybindTimeout);
+
+  const input = sanitizeInput(e, sanitizeKeybind);
+  overlayValidationInfo.textContent = input ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
+  overlayValidationInfo.className = `info-box ${input ? 'valid' : 'info'}`;
+
+  const normalized = normalizeKeybind(input);
+  saveKeybindTimeout = setTimeout(() => {
+    iina.preferences.set("overlayKeybind", normalized);
+    saveKeybindTimeout = null;
+  }, 200);
+});
+
+iina.preferences.get("overlayKeybind", value => {
+  const clean = sanitizeKeybind(value || "")
+  overlayKeybindInput.value = clean;
+  overlayValidationInfo.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
+  overlayValidationInfo.className = `info-box ${clean ? 'valid' : 'info'}`;
 });

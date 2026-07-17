@@ -1,2 +1,8 @@
 .DS_Store
 ._*AGENTS.md
+.opencode/
+.superpowers/
+openspec/
+docs/
+AGENTS.md
+opencode.jsonc
