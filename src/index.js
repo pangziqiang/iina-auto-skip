@@ -30,57 +30,6 @@ let config = {
 
 let overlayVisible = false
 let overlayInitPos = 0
-let captureIntroKey = 'I'
-let captureOutroKey = 'O'
-
-function captureIntro() {
-  const pos = parseFloat(mpv.getString("time-pos"))
-  if (isNaN(pos) || pos < 0) return
-  saveConfig({ introDuration: Math.floor(pos) })
-  mpv.command("show-text", [`已捕获片头 ${formatTimeStr(pos)}`, "3000", "0"])
-  syncSidebar()
-}
-
-function captureOutro() {
-  const pos = parseFloat(mpv.getString("time-pos"))
-  const duration = parseFloat(mpv.getString("duration"))
-  if (isNaN(pos) || pos < 0) return
-  if (isNaN(duration) || duration <= 0) return
-  if (pos >= duration) {
-    saveConfig({ outroDuration: 0 })
-    mpv.command("show-text", ["已在视频结尾，片尾跳过设为 0", "3000", "0"])
-    syncSidebar()
-    return
-  }
-  if (config.introDuration > 0 && pos <= config.introDuration) {
-    mpv.command("show-text", ["片尾必须在片头之后", "3000", "0"])
-    return
-  }
-  const outroDuration = Math.floor(duration - pos)
-  saveConfig({ outroDuration })
-  mpv.command("show-text", [`已捕获片尾 ${formatTimeStr(outroDuration)}`, "3000", "0"])
-  syncSidebar()
-}
-
-function syncSidebar() {
-  if (!states.sidebarVisible) return
-  sidebar.postMessage(PluginEvent.INIT, {
-    enabled: config.enabled,
-    introDuration: config.introDuration,
-    outroDuration: config.outroDuration,
-    autoFocus: preferences.get("autoFocus") !== false
-  });
-}
-
-function loadCaptureKeys() {
-  captureIntroKey = preferences.get("captureIntroKey") || "I"
-  captureOutroKey = preferences.get("captureOutroKey") || "O"
-}
-
-function registerCaptureKeys() {
-  input.onKeyDown(captureIntroKey, () => { captureIntro(); return true }, input.PRIORITY_LOW)
-  input.onKeyDown(captureOutroKey, () => { captureOutro(); return true }, input.PRIORITY_LOW)
-}
 
 function toggleOverlay() {
   if (overlayVisible) {
@@ -321,8 +270,6 @@ event.on("iina.window-loaded", () => {
     showOverlay();
   });
 
-  loadCaptureKeys();
-  registerCaptureKeys();
   registerMenuItem();
 
   console.log("自动跳过 插件已加载");
