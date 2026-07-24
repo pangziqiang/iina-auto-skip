@@ -168,9 +168,7 @@ standaloneToggle.addEventListener('change', () => {
   iina.preferences.set("useStandaloneWindow", standaloneToggle.checked);
   iina.preferences.sync();
 });
-iina.preferences.get("useStandaloneWindow", value => {
-  standaloneToggle.checked = value !== false;
-});
+standaloneToggle.checked = iina.preferences.get("useStandaloneWindow") === true;
 
 // Overlay keybind
 overlayKeybindInput.addEventListener('input', e => {
