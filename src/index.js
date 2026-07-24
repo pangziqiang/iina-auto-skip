@@ -101,12 +101,10 @@ function togglePanel() {
     standaloneWindow.onMessage('overlay-open', () => { showOverlay(); });
     standaloneWindow.onMessage('ready', () => { syncPanel(); });
 
-    standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true })
+    standaloneWindow.setProperty({ title: _('menu.autoSkip'), resizable: false, fullSizeContentView: true })
     windowCreated = true
   }
   if (standaloneWindow.isOpen()) {
-    pinned = false
-    stopPinTimer()
     standaloneWindow.close()
   } else {
     positionWindow()
@@ -115,6 +113,7 @@ function togglePanel() {
 }
 
 function showOverlay() {
+  if (overlayVisible) return
   if (typeof overlay === 'undefined') {
     console.log("ERROR: overlay API is undefined")
     return

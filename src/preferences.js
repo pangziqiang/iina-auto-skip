@@ -179,10 +179,12 @@ overlayKeybindInput.addEventListener('input', e => {
   clearTimeout(saveOverlayKeybindTimeout);
 
   const input = sanitizeInput(e, sanitizeKeybind);
-  overlayValidationInfo.textContent = input ? _('pref.keyValid') : _('pref.keyDisabled');
-  overlayValidationInfo.className = `info-box ${input ? 'valid' : 'info'}`;
+  if (!validateKeybind(input)) return;
 
   const normalized = normalizeKeybind(input);
+  overlayValidationInfo.textContent = _('pref.keyValid');
+  overlayValidationInfo.className = 'info-box valid';
+
   saveOverlayKeybindTimeout = setTimeout(() => {
     iina.preferences.set("overlayKeybind", normalized);
     saveOverlayKeybindTimeout = null;
@@ -192,6 +194,11 @@ overlayKeybindInput.addEventListener('input', e => {
 prefGet("overlayKeybind", "a", value => {
   const clean = sanitizeKeybind(value || "")
   overlayKeybindInput.value = clean;
-  overlayValidationInfo.textContent = clean ? _('pref.keyValid') : _('pref.keyDisabled');
-  overlayValidationInfo.className = `info-box ${clean ? 'valid' : 'info'}`;
+  if (clean) {
+    overlayValidationInfo.textContent = _('pref.keyValid');
+    overlayValidationInfo.className = 'info-box valid';
+  } else {
+    overlayValidationInfo.textContent = _('pref.keyDisabled');
+    overlayValidationInfo.className = 'info-box info';
+  }
 });
