@@ -150,7 +150,7 @@ function init(config) {
 
   if (!duration || duration < 10) {
     els.empty.style.display = 'flex'
-    els.empty.textContent = '视频过短'
+    els.empty.textContent = _('overlay.tooShort')
     els.btnSave.disabled = true
     if (els.btnSaveKeep) els.btnSaveKeep.disabled = true
     return

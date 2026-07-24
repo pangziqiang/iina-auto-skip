@@ -115,9 +115,9 @@ function updateValidationInfo(className, message) {
 function validateKeybind(input) {
   const msg = invalidKeybindMessage(input);
   if (!input) {
-    updateValidationInfo('info', "ⓘ 快捷键已禁用");
+    updateValidationInfo('info', _('pref.keyDisabled'));
   } else if (!msg) {
-    updateValidationInfo('valid', '✓ 快捷键有效');
+    updateValidationInfo('valid', _('pref.keyValid'));
   } else if (msg.startsWith("可能无效的")) {
     updateValidationInfo('warning', "⚠ " + msg);
   } else {
@@ -179,7 +179,7 @@ overlayKeybindInput.addEventListener('input', e => {
   clearTimeout(saveOverlayKeybindTimeout);
 
   const input = sanitizeInput(e, sanitizeKeybind);
-  overlayValidationInfo.textContent = input ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
+  overlayValidationInfo.textContent = input ? _('pref.keyValid') : _('pref.keyDisabled');
   overlayValidationInfo.className = `info-box ${input ? 'valid' : 'info'}`;
 
   const normalized = normalizeKeybind(input);
@@ -192,6 +192,6 @@ overlayKeybindInput.addEventListener('input', e => {
 prefGet("overlayKeybind", "a", value => {
   const clean = sanitizeKeybind(value || "")
   overlayKeybindInput.value = clean;
-  overlayValidationInfo.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
+  overlayValidationInfo.textContent = clean ? _('pref.keyValid') : _('pref.keyDisabled');
   overlayValidationInfo.className = `info-box ${clean ? 'valid' : 'info'}`;
 });

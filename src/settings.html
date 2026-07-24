@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="settings.css">
+    <script src="i18n.js"></script>
 </head>
 <body>
     <div class="top-content">
         <div class="section">
-            <div class="section-title">自动跳过</div>
+            <div class="section-title" data-i18n="settings.title"></div>
             <div class="toggle-row">
-                <label class="toggle-label">启用自动跳过</label>
+                <label class="toggle-label" data-i18n="settings.enable"></label>
                 <label class="switch">
                     <input type="checkbox" id="enableToggle">
                     <span class="slider"></span>
@@ -19,7 +20,7 @@
         </div>
 
         <div class="section">
-            <div class="section-title">跳过片头</div>
+            <div class="section-title" data-i18n="settings.intro"></div>
             <div class="time-row">
                 <input type="text" class="time-box" id="introH" placeholder="0" inputmode="numeric">
                 <span class="time-sep">:</span>
@@ -30,7 +31,7 @@
         </div>
 
         <div class="section">
-            <div class="section-title">跳过片尾</div>
+            <div class="section-title" data-i18n="settings.outro"></div>
             <div class="time-row">
                 <input type="text" class="time-box" id="outroH" placeholder="0" inputmode="numeric">
                 <span class="time-sep">:</span>
@@ -38,21 +39,22 @@
                 <span class="time-sep">:</span>
                 <input type="text" class="time-box" id="outroS" placeholder="0" inputmode="numeric">
             </div>
-            <div class="input-hint">在结尾前停止</div>
+            <div class="input-hint" data-i18n="settings.outroHint"></div>
         </div>
 
-        <button id="saveBtn">保存设置</button>
-        <button id="visualBtn">可视化设置</button>
+        <button id="saveBtn" data-i18n="settings.save"></button>
+        <button id="visualBtn" data-i18n="settings.visual"></button>
         <div id="statusMsg" class="status-msg"></div>
     </div>
 
     <div class="section log-section">
-        <div class="section-title">跳过日志</div>
+        <div class="section-title" data-i18n="settings.log"></div>
         <div class="log" id="logContainer">
-            <div class="empty-state">暂无记录</div>
+            <div class="empty-state" data-i18n="settings.emptyLog"></div>
         </div>
     </div>
 
+    <script>translatePage()</script>
     <script src="settings.js"></script>
 </body>
 </html>

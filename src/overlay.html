@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="overlay.css">
+    <script src="i18n.js"></script>
 </head>
 <body>
     <div id="osd-container">
-        <div class="osd-center-hint" data-clickable>按 ESC 关闭（不保存）</div>
+        <div class="osd-center-hint" data-clickable data-i18n="overlay.hint"></div>
         <div class="osd-header" data-clickable>
-            <span class="title">拖动 <b style="color:#40a9ff">I(片头)</b> 和 <b style="color:#ffb340">O(片尾)</b> 设置跳过区间</span>
+            <span class="title" data-i18n="overlay.dragHint"></span>
         </div>
 
         <div class="osd-track-area" id="osdTrackArea" data-clickable>
@@ -20,29 +21,30 @@
             <div class="osd-handle osd-handle-outro" id="osdHandleOutro" data-clickable></div>
             <div class="osd-time-label osd-label-intro" id="osdLabelIntro">00:00:00</div>
             <div class="osd-time-label osd-label-outro" id="osdLabelOutro">00:00:00</div>
-            <div class="osd-handle-label" id="osdLabelIntroTag">片头</div>
-            <div class="osd-handle-label" id="osdLabelOutroTag">片尾</div>
+            <div class="osd-handle-label" id="osdLabelIntroTag" data-i18n="overlay.introTag"></div>
+            <div class="osd-handle-label" id="osdLabelOutroTag" data-i18n="overlay.outroTag"></div>
         </div>
 
         <div class="osd-bottom" id="osd-bottom">
-            <div class="osd-time-info" title="当前画面位置 / 视频总时长">
-                <span class="osd-time-label-text">当前位置</span>
+            <div class="osd-time-info" title="">
+                <span class="osd-time-label-text" data-i18n="overlay.currentPos"></span>
                 <span id="osdCurrentTime">00:00:00</span>
                 <span class="sep">/</span>
                 <span id="osdDuration">00:00:00</span>
             </div>
             <div class="osd-btns">
-                <button class="osd-btn" id="osdBtnCancel" data-clickable>取消</button>
-                <button class="osd-btn osd-btn-save" id="osdBtnSave" data-clickable>保存并关闭</button>
-                <button class="osd-btn osd-btn-save" id="osdBtnSaveKeep" data-clickable>保存</button>
+                <button class="osd-btn" id="osdBtnCancel" data-clickable data-i18n="overlay.cancel"></button>
+                <button class="osd-btn osd-btn-save" id="osdBtnSave" data-clickable data-i18n="overlay.saveClose"></button>
+                <button class="osd-btn osd-btn-save" id="osdBtnSaveKeep" data-clickable data-i18n="overlay.saveKeep"></button>
             </div>
         </div>
 
-        <div class="osd-empty-state" id="osdEmpty" style="display:none" data-clickable>暂无视频</div>
+        <div class="osd-empty-state" id="osdEmpty" style="display:none" data-clickable data-i18n="overlay.noVideo"></div>
     </div>
 
-    <div class="osd-hidden-hint" id="osdHiddenHint">鼠标移入即可调整</div>
+    <div class="osd-hidden-hint" id="osdHiddenHint" data-i18n="overlay.idleHint"></div>
 
+    <script>translatePage()</script>
     <script src="overlay.js"></script>
 </body>
 </html>

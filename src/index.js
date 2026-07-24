@@ -1,4 +1,28 @@
-const { mpv, menu, input, preferences, event, console, overlay, standaloneWindow, core } = iina;
+const { mpv, menu, input, preferences, event, console, overlay, standaloneWindow, core, utils } = iina;
+
+const lang = (() => {
+  try {
+    const locales = utils.preferredLocalizations()
+    return (locales && locales.length > 0 && locales[0].startsWith('zh')) ? 'zh' : 'en'
+  } catch (e) { return 'zh' }
+})()
+
+const _strings = {
+  'menu.autoSkip': { zh: '自动跳过', en: 'Auto Skip' },
+  'menu.visualSetting': { zh: '可视化设置', en: 'Visual Setting' },
+  'skip.introSkipped': { zh: '已跳过片头 {time}', en: 'Intro skipped ({time})' },
+  'skip.outroSkipped': { zh: '已跳过片尾 {time}', en: 'Outro skipped ({time})' },
+  'skip.visualSaved': { zh: '可视化设置：片头 {intro}，片尾 {outro}', en: 'Visual set: intro {intro}, outro {outro}' },
+  'skip.saved': { zh: '已保存：片头 {intro}，片尾 {outro}', en: 'Saved: intro {intro}, outro {outro}' },
+}
+
+function _(key, params) {
+  const s = _strings[key]
+  if (!s) return key
+  let t = s[lang] || s.en || key
+  if (params) for (const k in params) t = t.replace(`{${k}}`, params[k])
+  return t
+}
 
 const PluginEvent = {
   INIT: 'auto-skip-init',
@@ -170,14 +194,14 @@ function overlayPause() {
 
 function overlaySave(newConfig) {
   saveConfig(newConfig)
-  addLog(`可视化设置：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
+  addLog(_('skip.visualSaved', { intro: formatTimeStr(newConfig.introDuration), outro: formatTimeStr(newConfig.outroDuration) }))
   syncPanel()
   hideOverlay()
 }
 
 function overlaySaveKeep(newConfig) {
   saveConfig(newConfig)
-  addLog(`已保存：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
+  addLog(_('skip.saved', { intro: formatTimeStr(newConfig.introDuration), outro: formatTimeStr(newConfig.outroDuration) }))
   syncPanel()
 }
 
@@ -200,7 +224,7 @@ function registerMenuItem() {
   preferences.sync();
 
   menu.addItem(
-    menu.item("自动跳过", () => togglePanel(), options)
+    menu.item(_('menu.autoSkip'), () => togglePanel(), options)
   );
 
   const overlayKeybind = preferences.get("overlayKeybind");
@@ -213,7 +237,7 @@ function registerMenuItem() {
   }
 
   menu.addItem(
-    menu.item("可视化设置", () => { overlayVisible ? hideOverlay() : showOverlay() }, overlayOptions)
+    menu.item(_('menu.visualSetting'), () => { overlayVisible ? hideOverlay() : showOverlay() }, overlayOptions)
   );
 }
 
@@ -260,7 +284,7 @@ function checkSkipPosition() {
   if (config.introDuration > 0 && pos < config.introDuration) {
     config.skipInProgress = true;
     mpv.command("seek", [config.introDuration.toString(), "absolute"]);
-    addLog(`已跳过片头 ${formatTimeStr(config.introDuration)}`);
+    addLog(_('skip.introSkipped', { time: formatTimeStr(config.introDuration) }));
     setTimeout(resetSkipFlag, 500);
     return;
   }
@@ -270,7 +294,7 @@ function checkSkipPosition() {
     if (pos >= outroPoint && pos < duration) {
       config.skipInProgress = true;
       mpv.command("seek", [duration.toString(), "absolute"]);
-      addLog(`已跳过片尾 ${formatTimeStr(config.outroDuration)}`);
+      addLog(_('skip.outroSkipped', { time: formatTimeStr(config.outroDuration) }));
       setTimeout(resetSkipFlag, 500);
     }
   }

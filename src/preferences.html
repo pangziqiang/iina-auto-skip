@@ -4,41 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="preferences.css">
+    <script src="i18n.js"></script>
 </head>
 <body>
     <div class="form-row">
-        <label for="keybindInput">侧边栏快捷键</label>
-        <input type="text" id="keybindInput" data-type="string" placeholder="例如 s" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
-        <div class="info-box warning" id="validationInfo">验证中...</div>
+        <label for="keybindInput" data-i18n="pref.sidebarKey"></label>
+        <input type="text" id="keybindInput" data-type="string" placeholder="s" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+        <div class="info-box warning" id="validationInfo">...</div>
     </div>
 
     <div class="form-row">
-        <label for="overlayKeybindInput">可视化设置快捷键</label>
-        <input type="text" id="overlayKeybindInput" data-type="string" placeholder="例如 v" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
-        <div class="info-box warning" id="overlayValidationInfo">验证中...</div>
+        <label for="overlayKeybindInput" data-i18n="pref.overlayKey"></label>
+        <input type="text" id="overlayKeybindInput" data-type="string" placeholder="a" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+        <div class="info-box warning" id="overlayValidationInfo">...</div>
     </div>
 
     <div class="form-row">
-        <div class="small secondary help-text">
-           <div><b>格式：</b><code>修饰键+按键</code>（例如 <code>Meta+g</code>、<code>Ctrl+Alt+LEFT</code>、<code>Shift+F5</code>）</div>
-           <div><b>修饰键：</b><code>Meta</code> (⌘)、<code>Ctrl</code>、<code>Alt</code>、<code>Shift</code></div>
-           <div>留空可禁用快捷键</div>
-        </div>
+        <div class="small secondary help-text" data-i18n="pref.restartHint"></div>
     </div>
 
     <div class="form-row">
         <div class="toggle-row">
-            <label class="toggle-label">输入框自动跳转</label>
+            <label class="toggle-label" data-i18n="pref.autoFocus"></label>
             <label class="switch">
                 <input type="checkbox" id="autoFocusToggle">
                 <span class="slider"></span>
             </label>
         </div>
-        <div class="help-text">开启后，在时/分/秒框中输入两位数字自动跳至下一框</div>
+        <div class="help-text" data-i18n="pref.autoFocusHint"></div>
     </div>
 
-    <div class="info-box info">ⓘ 快捷键修改需要重启 IINA 才能生效</div>
-
+    <script>translatePage()</script>
     <script src="preferences.js"></script>
 </body>
 </html>

@@ -121,5 +121,5 @@ function saveSettings() {
   };
 
   iina.postMessage(PluginEvent.SAVE, config);
-  showStatus('已保存', 'success');
+  showStatus(_('settings.saved'), 'success');
 }
