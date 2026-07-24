@@ -43,8 +43,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    padding: 32px 16px 16px;
-    -webkit-app-region: drag;
+    padding: 16px;
     font-size: 13px;
     line-height: 1.4;
     display: flex;
@@ -52,11 +51,6 @@ body {
     overflow-y: auto;
     user-select: none;
     -webkit-user-select: none;
-
-}
-
-input, button, .time-row, .toggle-row {
-    -webkit-app-region: no-drag;
 }
 
 input {
