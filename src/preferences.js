@@ -20,6 +20,16 @@ const SPECIAL_KEYS = new Set([
 let conflictingBind = null;
 let saveKeybindTimeout = null;
 let saveAutoFocusTimeout = null;
+let prefsReady = false
+
+function prefGet(key, fallback, cb) {
+  const timer = setTimeout(() => { if (!prefsReady) cb(fallback); prefsReady = true }, 500)
+  iina.preferences.get(key, value => {
+    clearTimeout(timer)
+    prefsReady = true
+    cb(value !== undefined && value !== null ? value : fallback)
+  })
+}
 
 function sanitizeInput(e, sanitizeFn) {
   const input = e.target;
@@ -147,18 +157,20 @@ autoFocusToggle.addEventListener('change', () => {
   }, 200);
 });
 
-{
-  const keybind = iina.preferences.get("keybind") || "";
-  const hasConflict = iina.preferences.get("bindConflict");
-  if (hasConflict) conflictingBind = keybind;
-  const clean = sanitizeKeybind(keybind);
-  keybindInput.value = clean;
-  if (validateKeybind(clean)) {
-    validateConflict(clean);
-  }
-}
+prefGet("keybind", "s", keybind => {
+  prefGet("bindConflict", false, hasConflict => {
+    if (hasConflict) conflictingBind = keybind;
+    const clean = sanitizeKeybind(keybind || "")
+    keybindInput.value = clean;
+    if (validateKeybind(clean)) {
+      validateConflict(clean);
+    }
+  });
+});
 
-autoFocusToggle.checked = iina.preferences.get("autoFocus") !== false;
+prefGet("autoFocus", true, value => {
+  autoFocusToggle.checked = value !== false;
+});
 
 // Standalone window toggle
 const standaloneToggle = document.getElementById('standaloneToggle')
@@ -166,7 +178,9 @@ standaloneToggle.addEventListener('change', () => {
   iina.preferences.set("useStandaloneWindow", standaloneToggle.checked);
   iina.preferences.sync();
 });
-standaloneToggle.checked = iina.preferences.get("useStandaloneWindow") === true;
+prefGet("useStandaloneWindow", true, value => {
+  standaloneToggle.checked = value === true;
+});
 
 // Overlay keybind
 overlayKeybindInput.addEventListener('input', e => {
@@ -183,10 +197,9 @@ overlayKeybindInput.addEventListener('input', e => {
   }, 200);
 });
 
-{
-  const raw = iina.preferences.get("overlayKeybind");
-  const clean = sanitizeKeybind(raw || "");
+prefGet("overlayKeybind", "a", value => {
+  const clean = sanitizeKeybind(value || "")
   overlayKeybindInput.value = clean;
   overlayValidationInfo.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
   overlayValidationInfo.className = `info-box ${clean ? 'valid' : 'info'}`;
-}
+});
