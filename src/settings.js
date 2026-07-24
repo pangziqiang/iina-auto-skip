@@ -84,11 +84,6 @@ setupAutoFocus(els.outroM, els.outroS);
 
 els.saveBtn.addEventListener('click', saveSettings);
 
-els.pinBtn = document.getElementById('pinBtn')
-els.pinBtn.addEventListener('click', () => {
-  iina.postMessage('toggle-pin', null)
-})
-
 els.visualBtn = document.getElementById('visualBtn')
 els.visualBtn.addEventListener('click', () => {
   iina.postMessage('overlay-open', null)
@@ -115,10 +110,6 @@ iina.onMessage(PluginEvent.LOG, ({ message }) => {
 });
 
 iina.postMessage('ready', null);
-
-iina.onMessage('pin-state', on => {
-  els.pinBtn.textContent = on ? '📌 窗口置顶（开启）' : '📌 窗口置顶'
-})
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') saveSettings();

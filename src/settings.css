@@ -99,18 +99,6 @@ input {
     color: var(--text-primary);
 }
 
-.pin-row {
-    margin-top: 6px;
-}
-
-.pin-btn {
-    font-size: 11px;
-    padding: 5px;
-    background: transparent;
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-}
-
 .switch {
     position: relative;
     display: inline-block;
