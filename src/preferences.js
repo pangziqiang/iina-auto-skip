@@ -158,9 +158,7 @@ autoFocusToggle.addEventListener('change', () => {
   }
 }
 
-iina.preferences.get("autoFocus", value => {
-  autoFocusToggle.checked = value !== false;
-});
+autoFocusToggle.checked = iina.preferences.get("autoFocus") !== false;
 
 // Standalone window toggle
 const standaloneToggle = document.getElementById('standaloneToggle')
