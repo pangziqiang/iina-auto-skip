@@ -1,4 +1,4 @@
-const { mpv, menu, input, preferences, sidebar, event, console, overlay, standaloneWindow } = iina;
+const { mpv, menu, input, preferences, sidebar, event, console, overlay, standaloneWindow, core } = iina;
 
 const PluginEvent = {
   INIT: 'auto-skip-init',
@@ -76,7 +76,17 @@ function togglePanel() {
       standaloneWindow.loadFile("src/settings.html")
       registerWindowHandlers()
       standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true })
-      standaloneWindow.setFrame(380, 800, undefined, undefined)
+      try {
+        const playerFrame = core.window.frame
+        if (playerFrame) {
+          const wx = playerFrame.x + playerFrame.width + 5
+          standaloneWindow.setFrame(380, 800, wx, playerFrame.y)
+        } else {
+          standaloneWindow.setFrame(380, 800, undefined, undefined)
+        }
+      } catch (e) {
+        standaloneWindow.setFrame(380, 800, undefined, undefined)
+      }
       standaloneWindow.open()
       windowCreated = true
     } else if (standaloneWindow.isOpen()) {
