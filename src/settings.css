@@ -43,7 +43,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    padding: 32px 16px 16px;
+    padding: 16px;
     font-size: 13px;
     line-height: 1.4;
     display: flex;
@@ -51,8 +51,7 @@ body {
     overflow-y: auto;
     user-select: none;
     -webkit-user-select: none;
-    max-width: 380px;
-    margin: 0 auto;
+
 }
 
 input {
