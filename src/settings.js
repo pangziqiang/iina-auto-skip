@@ -8,7 +8,8 @@ const els = {
   outroS: document.getElementById('outroS'),
   saveBtn: document.getElementById('saveBtn'),
   statusMsg: document.getElementById('statusMsg'),
-  logContainer: document.getElementById('logContainer')
+  logContainer: document.getElementById('logContainer'),
+  visualBtn: document.getElementById('visualBtn')
 }
 
 const PluginEvent = {
@@ -82,8 +83,6 @@ setupAutoFocus(els.outroH, els.outroM);
 setupAutoFocus(els.outroM, els.outroS);
 
 els.saveBtn.addEventListener('click', saveSettings);
-
-els.visualBtn = document.getElementById('visualBtn')
 els.visualBtn.addEventListener('click', () => {
   iina.postMessage('overlay-open', null)
 })

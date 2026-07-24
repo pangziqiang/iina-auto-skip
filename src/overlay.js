@@ -146,7 +146,7 @@ function init(config) {
   introTime = config.introDuration || 0
   outroTime = duration - (config.outroDuration || 0)
   enabled = config.enabled === true
-  if (config.overlayKey) overlayKey = config.overlayKey
+  if (config.overlayKey) overlayKey = config.overlayKey.toLowerCase()
 
   if (!duration || duration < 10) {
     els.empty.style.display = 'flex'
@@ -226,11 +226,10 @@ document.addEventListener('touchmove', (e) => {
 
 document.addEventListener('touchend', handleDragEnd)
 
-// Prevent double-click from reaching IINA window manager
-document.addEventListener('dblclick', (e) => {
-  e.preventDefault()
+// Prevent double-click on track area from zooming IINA window
+els.trackArea.addEventListener('dblclick', (e) => {
   e.stopPropagation()
-}, true)
+})
 
 // Idle timer on mouse activity
 els.container.addEventListener('mouseenter', resetIdleTimer)
@@ -261,7 +260,7 @@ els.btnSaveKeep.addEventListener('click', () => {
 
 // Keyboard
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' || e.key.toLowerCase() === overlayKey.toLowerCase()) {
+  if (e.key === 'Escape' || e.key.toLowerCase() === overlayKey) {
     if (!e.repeat) iina.postMessage('overlay-hide', null)
   }
   if (e.key === 'Enter') {
