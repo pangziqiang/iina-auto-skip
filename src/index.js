@@ -75,8 +75,8 @@ function togglePanel() {
     if (!windowCreated) {
       standaloneWindow.loadFile("src/settings.html")
       registerWindowHandlers()
-      standaloneWindow.setProperty({ title: "自动跳过", resizable: false })
-      standaloneWindow.setFrame(380, 520, undefined, undefined)
+      standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true, hideTitleBar: true })
+      standaloneWindow.setFrame(380, 600, undefined, undefined)
       standaloneWindow.open()
       windowCreated = true
     } else if (standaloneWindow.isOpen()) {
