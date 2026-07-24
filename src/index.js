@@ -1,4 +1,4 @@
-const { mpv, menu, input, preferences, sidebar, event, console, overlay } = iina;
+const { mpv, menu, input, preferences, sidebar, event, console, overlay, standaloneWindow } = iina;
 
 const PluginEvent = {
   INIT: 'auto-skip-init',
@@ -30,6 +30,8 @@ let config = {
 let overlayVisible = false
 let overlayInitPos = 0
 let overlayWasPlaying = false
+let useStandaloneWindow = true
+let windowCreated = false
 
 function toggleOverlay() {
   if (overlayVisible) {
@@ -45,6 +47,68 @@ function registerOverlayHandlers() {
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
   overlay.onMessage('overlay-save-keep', overlaySaveKeep);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
+}
+
+function sendToPanel(event, data) {
+  if (useStandaloneWindow) {
+    if (windowCreated) standaloneWindow.postMessage(event, data)
+  } else {
+    sidebar.postMessage(event, data)
+  }
+}
+
+function addLog(message) {
+  sendToPanel(PluginEvent.LOG, { message });
+}
+
+function syncPanel() {
+  sendToPanel(PluginEvent.INIT, {
+    enabled: config.enabled,
+    introDuration: config.introDuration,
+    outroDuration: config.outroDuration,
+    autoFocus: preferences.get("autoFocus") !== false
+  });
+}
+
+function togglePanel() {
+  if (useStandaloneWindow) {
+    if (!windowCreated) {
+      standaloneWindow.loadFile("src/settings.html")
+      registerWindowHandlers()
+      standaloneWindow.setProperty({ title: "自动跳过", resizable: false, hideTitleBar: true })
+      standaloneWindow.setFrame(380, 520, undefined, undefined)
+      standaloneWindow.open()
+      windowCreated = true
+    } else if (standaloneWindow.isOpen()) {
+      standaloneWindow.close()
+    } else {
+      standaloneWindow.open()
+      syncPanel()
+    }
+  } else {
+    states.sidebarVisible ? sidebar.hide() : sidebar.show()
+  }
+}
+
+function registerPanelHandlers() {
+  sidebar.onMessage(PluginEvent.VISIBILITY, visible => {
+    states.sidebarVisible = visible;
+    if (!visible) return;
+    sidebar.postMessage(PluginEvent.INIT, {
+      enabled: config.enabled,
+      introDuration: config.introDuration,
+      outroDuration: config.outroDuration,
+      autoFocus: preferences.get("autoFocus") !== false
+    });
+  });
+
+  sidebar.onMessage(PluginEvent.SAVE, (newConfig) => { saveConfig(newConfig); });
+  sidebar.onMessage('overlay-open', () => { showOverlay(); });
+}
+
+function registerWindowHandlers() {
+  standaloneWindow.onMessage(PluginEvent.SAVE, (newConfig) => { saveConfig(newConfig); });
+  standaloneWindow.onMessage('overlay-open', () => { showOverlay(); });
 }
 
 function showOverlay() {
@@ -125,41 +189,21 @@ function overlayPause() {
   mpv.set("pause", true)
 }
 
-
-
 function overlaySave(newConfig) {
   saveConfig(newConfig)
   addLog(`可视化设置：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
-  if (states.sidebarVisible) {
-    sidebar.postMessage(PluginEvent.INIT, {
-      enabled: config.enabled,
-      introDuration: config.introDuration,
-      outroDuration: config.outroDuration,
-      autoFocus: preferences.get("autoFocus") !== false
-    });
-  }
+  syncPanel()
   hideOverlay()
 }
 
 function overlaySaveKeep(newConfig) {
   saveConfig(newConfig)
   addLog(`已保存：片头 ${formatTimeStr(newConfig.introDuration)}，片尾 ${formatTimeStr(newConfig.outroDuration)}`)
-  if (states.sidebarVisible) {
-    sidebar.postMessage(PluginEvent.INIT, {
-      enabled: config.enabled,
-      introDuration: config.introDuration,
-      outroDuration: config.outroDuration,
-      autoFocus: preferences.get("autoFocus") !== false
-    });
-  }
+  syncPanel()
 }
 
 function resetSkipFlag() {
   states.skipInProgress = false;
-}
-
-function addLog(message) {
-  sidebar.postMessage(PluginEvent.LOG, { message });
 }
 
 function registerMenuItem() {
@@ -177,9 +221,7 @@ function registerMenuItem() {
   preferences.sync();
 
   menu.addItem(
-    menu.item("自动跳过", () => {
-      states.sidebarVisible ? sidebar.hide() : sidebar.show()
-    }, options)
+    menu.item("自动跳过", () => togglePanel(), options)
   );
 
   const overlayKeybind = preferences.get("overlayKeybind");
@@ -236,7 +278,6 @@ function checkSkipPosition() {
   const duration = parseFloat(mpv.getString("duration"));
   if (isNaN(duration) || duration <= 0) return;
 
-  // Skip intro
   if (config.introDuration > 0 && pos < config.introDuration) {
     states.skipInProgress = true;
     mpv.command("seek", [config.introDuration.toString(), "absolute"]);
@@ -245,7 +286,6 @@ function checkSkipPosition() {
     return;
   }
 
-  // Skip outro: seek to end to trigger natural EOF + next file
   if (config.outroDuration > 0) {
     const outroPoint = duration - config.outroDuration;
     if (pos >= outroPoint && pos < duration) {
@@ -262,35 +302,18 @@ function fileLoaded() {
 }
 
 event.on("iina.window-loaded", () => {
+  useStandaloneWindow = preferences.get("useStandaloneWindow") !== false;
 
-  sidebar.loadFile("src/sidebar.html");
+  if (!useStandaloneWindow) {
+    sidebar.loadFile("src/sidebar.html");
+  }
 
   loadConfig();
 
-  // Register mpv event listeners once — they stay alive for the whole plugin lifecycle
   event.on("mpv.time-pos.changed", checkSkipPosition);
   event.on("iina.file-loaded", fileLoaded);
 
-  sidebar.onMessage(PluginEvent.VISIBILITY, visible => {
-    states.sidebarVisible = visible;
-    if (!visible) return;
-
-    sidebar.postMessage(PluginEvent.INIT, {
-      enabled: config.enabled,
-      introDuration: config.introDuration,
-      outroDuration: config.outroDuration,
-      autoFocus: preferences.get("autoFocus") !== false
-    });
-  });
-
-  sidebar.onMessage(PluginEvent.SAVE, (newConfig) => {
-    saveConfig(newConfig);
-  });
-
-  sidebar.onMessage('overlay-open', () => {
-    showOverlay();
-  });
-
+  registerPanelHandlers();
   registerMenuItem();
 
   input.onKeyDown('ESC', () => {

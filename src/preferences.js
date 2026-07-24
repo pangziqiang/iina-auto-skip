@@ -162,6 +162,15 @@ iina.preferences.get("autoFocus", value => {
   autoFocusToggle.checked = value !== false;
 });
 
+// Standalone window toggle
+const standaloneToggle = document.getElementById('standaloneToggle')
+standaloneToggle.addEventListener('change', () => {
+  iina.preferences.set("useStandaloneWindow", standaloneToggle.checked);
+});
+iina.preferences.get("useStandaloneWindow", value => {
+  standaloneToggle.checked = value !== false;
+});
+
 // Overlay keybind
 overlayKeybindInput.addEventListener('input', e => {
   clearTimeout(saveKeybindTimeout);
