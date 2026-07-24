@@ -70,6 +70,23 @@ function syncPanel() {
   });
 }
 
+function positionWindow() {
+  try {
+    const pf = core.window.frame
+    if (!pf) return
+    const screens = core.window.screens
+    if (!screens) { standaloneWindow.setFrame(380, 800, pf.x + pf.width + 5, pf.y); return }
+    const cur = screens.find(s => s.current)
+    const sf = cur ? cur.frame : null
+    const W = 380, GAP = 5
+    let x = pf.x + pf.width + GAP
+    if (sf && x + W > sf.x + sf.width) {
+      x = pf.x - W - GAP
+    }
+    standaloneWindow.setFrame(W, 800, x, pf.y)
+  } catch (e) {}
+}
+
 function togglePanel() {
   if (useStandaloneWindow) {
     if (!windowCreated) {
@@ -81,14 +98,11 @@ function togglePanel() {
     if (standaloneWindow.isOpen()) {
       standaloneWindow.close()
     } else {
-      standaloneWindow.open()
       setTimeout(() => {
-        try {
-          const f = core.window.frame
-          if (f) standaloneWindow.setFrame(380, 800, f.x + f.width + 5, f.y)
-        } catch (e) {}
-      }, 50)
-      syncPanel()
+        positionWindow()
+        standaloneWindow.open()
+        syncPanel()
+      }, 0)
     }
   } else {
     states.sidebarVisible ? sidebar.hide() : sidebar.show()
