@@ -225,10 +225,19 @@ html, body {
 
 .osd-time-info {
     position: absolute;
-    left: 0;
+    left: 16px;
     font-size: 11px;
     color: var(--osd-text-secondary);
     font-family: var(--osd-mono);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.osd-time-info .osd-time-label-text {
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    font-family: var(--osd-font);
 }
 
 .osd-time-info .sep {
