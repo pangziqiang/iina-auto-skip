@@ -19,14 +19,16 @@ const SPECIAL_KEYS = new Set([
 
 let conflictingBind = null;
 let saveKeybindTimeout = null;
+let saveOverlayKeybindTimeout = null;
 let saveAutoFocusTimeout = null;
-let prefsReady = false
 
 function prefGet(key, fallback, cb) {
-  const timer = setTimeout(() => { if (!prefsReady) cb(fallback); prefsReady = true }, 500)
+  let fired = false
+  const timer = setTimeout(() => { if (!fired) { fired = true; cb(fallback) } }, 500)
   iina.preferences.get(key, value => {
+    if (fired) return
+    fired = true
     clearTimeout(timer)
-    prefsReady = true
     cb(value !== undefined && value !== null ? value : fallback)
   })
 }
@@ -174,16 +176,16 @@ prefGet("autoFocus", true, value => {
 
 // Overlay keybind
 overlayKeybindInput.addEventListener('input', e => {
-  clearTimeout(saveKeybindTimeout);
+  clearTimeout(saveOverlayKeybindTimeout);
 
   const input = sanitizeInput(e, sanitizeKeybind);
   overlayValidationInfo.textContent = input ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
   overlayValidationInfo.className = `info-box ${input ? 'valid' : 'info'}`;
 
   const normalized = normalizeKeybind(input);
-  saveKeybindTimeout = setTimeout(() => {
+  saveOverlayKeybindTimeout = setTimeout(() => {
     iina.preferences.set("overlayKeybind", normalized);
-    saveKeybindTimeout = null;
+    saveOverlayKeybindTimeout = null;
   }, 200);
 });
 

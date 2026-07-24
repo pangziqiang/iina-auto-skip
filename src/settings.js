@@ -14,8 +14,7 @@ const els = {
 const PluginEvent = {
   INIT: 'auto-skip-init',
   SAVE: 'auto-skip-save',
-  LOG: 'auto-skip-log',
-  VISIBILITY: 'auto-skip-visible'
+  LOG: 'auto-skip-log'
 }
 
 let autoFocusEnabled = true
