@@ -26,6 +26,20 @@ let overlayVisible = false
 let overlayInitPos = 0
 let overlayWasPlaying = false
 let windowCreated = false
+let pinned = false
+let pinTimer = null
+
+function startPinTimer() {
+  stopPinTimer()
+  pinTimer = setInterval(() => {
+    if (!pinned || !windowCreated || !standaloneWindow.isOpen()) { stopPinTimer(); return }
+    standaloneWindow.open()
+  }, 500)
+}
+
+function stopPinTimer() {
+  if (pinTimer) { clearInterval(pinTimer); pinTimer = null }
+}
 
 function toggleOverlay() {
   overlayVisible ? hideOverlay() : showOverlay()
@@ -77,18 +91,20 @@ function togglePanel() {
     standaloneWindow.onMessage('overlay-open', () => { showOverlay(); });
     standaloneWindow.onMessage('ready', () => { syncPanel(); });
     standaloneWindow.onMessage('toggle-pin', () => {
-      const on = !core.window.ontop
-      core.window.ontop = on
-      standaloneWindow.postMessage('pin-state', on)
+      pinned = !pinned
+      standaloneWindow.postMessage('pin-state', pinned)
     });
     standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true })
     windowCreated = true
   }
   if (standaloneWindow.isOpen()) {
+    pinned = false
+    stopPinTimer()
     standaloneWindow.close()
   } else {
     positionWindow()
     standaloneWindow.open()
+    if (pinned) startPinTimer()
   }
 }
 
