@@ -76,23 +76,16 @@ function togglePanel() {
       standaloneWindow.loadFile("src/settings.html")
       registerWindowHandlers()
       standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true })
-      try {
-        const playerFrame = core.window.frame
-        if (playerFrame) {
-          const wx = playerFrame.x + playerFrame.width + 5
-          standaloneWindow.setFrame(380, 800, wx, playerFrame.y)
-        } else {
-          standaloneWindow.setFrame(380, 800, undefined, undefined)
-        }
-      } catch (e) {
-        standaloneWindow.setFrame(380, 800, undefined, undefined)
-      }
-      standaloneWindow.open()
       windowCreated = true
-    } else if (standaloneWindow.isOpen()) {
+    }
+    if (standaloneWindow.isOpen()) {
       standaloneWindow.close()
     } else {
       standaloneWindow.open()
+      try {
+        const f = core.window.frame
+        if (f) standaloneWindow.setFrame(380, 800, f.x + f.width + 5, f.y)
+      } catch (e) {}
       syncPanel()
     }
   } else {
