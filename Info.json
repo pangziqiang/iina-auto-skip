@@ -14,16 +14,13 @@
     "keybind": "s",
     "overlayKeybind": "a",
     "autoFocus": true,
-    "useStandaloneWindow": true,
     "skipConfig": {
       "enabled": false,
       "introDuration": 0,
       "outroDuration": 0
     }
   },
-  "sidebarTab": {
-    "name": "自动跳过"
-  },
+
   "permissions": ["video-overlay"],
   "allowedDomains": ["*"]
 }

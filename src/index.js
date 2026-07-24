@@ -1,15 +1,9 @@
-const { mpv, menu, input, preferences, sidebar, event, console, overlay, standaloneWindow, core } = iina;
+const { mpv, menu, input, preferences, event, console, overlay, standaloneWindow, core } = iina;
 
 const PluginEvent = {
   INIT: 'auto-skip-init',
   SAVE: 'auto-skip-save',
-  LOG: 'auto-skip-log',
-  VISIBILITY: 'auto-skip-visible'
-}
-
-const states = {
-  sidebarVisible: false,
-  skipInProgress: false
+  LOG: 'auto-skip-log'
 }
 
 const OverlayEvent = {
@@ -24,21 +18,17 @@ const OverlayEvent = {
 let config = {
   enabled: false,
   introDuration: 0,
-  outroDuration: 0
+  outroDuration: 0,
+  skipInProgress: false
 }
 
 let overlayVisible = false
 let overlayInitPos = 0
 let overlayWasPlaying = false
-let useStandaloneWindow = true
 let windowCreated = false
 
 function toggleOverlay() {
-  if (overlayVisible) {
-    hideOverlay()
-  } else {
-    showOverlay()
-  }
+  overlayVisible ? hideOverlay() : showOverlay()
 }
 
 function registerOverlayHandlers() {
@@ -49,20 +39,13 @@ function registerOverlayHandlers() {
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
 }
 
-function sendToPanel(event, data) {
-  if (useStandaloneWindow) {
-    if (windowCreated) standaloneWindow.postMessage(event, data)
-  } else {
-    sidebar.postMessage(event, data)
-  }
-}
-
 function addLog(message) {
-  sendToPanel(PluginEvent.LOG, { message });
+  if (windowCreated) standaloneWindow.postMessage(PluginEvent.LOG, { message });
 }
 
 function syncPanel() {
-  sendToPanel(PluginEvent.INIT, {
+  if (!windowCreated) return
+  standaloneWindow.postMessage(PluginEvent.INIT, {
     enabled: config.enabled,
     introDuration: config.introDuration,
     outroDuration: config.outroDuration,
@@ -88,44 +71,20 @@ function positionWindow() {
 }
 
 function togglePanel() {
-  if (useStandaloneWindow) {
-    if (!windowCreated) {
-      standaloneWindow.loadFile("src/settings.html")
-      registerWindowHandlers()
-      standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true })
-      windowCreated = true
-    }
-    if (standaloneWindow.isOpen()) {
-      standaloneWindow.close()
-    } else {
-      positionWindow()
-      standaloneWindow.open()
-    }
-  } else {
-    states.sidebarVisible ? sidebar.hide() : sidebar.show()
+  if (!windowCreated) {
+    standaloneWindow.loadFile("src/settings.html")
+    standaloneWindow.onMessage(PluginEvent.SAVE, (newConfig) => { saveConfig(newConfig); });
+    standaloneWindow.onMessage('overlay-open', () => { showOverlay(); });
+    standaloneWindow.onMessage('ready', () => { syncPanel(); });
+    standaloneWindow.setProperty({ title: "自动跳过", resizable: false, fullSizeContentView: true })
+    windowCreated = true
   }
-}
-
-function registerPanelHandlers() {
-  sidebar.onMessage(PluginEvent.VISIBILITY, visible => {
-    states.sidebarVisible = visible;
-    if (!visible) return;
-    sidebar.postMessage(PluginEvent.INIT, {
-      enabled: config.enabled,
-      introDuration: config.introDuration,
-      outroDuration: config.outroDuration,
-      autoFocus: preferences.get("autoFocus") !== false
-    });
-  });
-
-  sidebar.onMessage(PluginEvent.SAVE, (newConfig) => { saveConfig(newConfig); });
-  sidebar.onMessage('overlay-open', () => { showOverlay(); });
-}
-
-function registerWindowHandlers() {
-  standaloneWindow.onMessage(PluginEvent.SAVE, (newConfig) => { saveConfig(newConfig); });
-  standaloneWindow.onMessage('overlay-open', () => { showOverlay(); });
-  standaloneWindow.onMessage('ready', () => { syncPanel(); });
+  if (standaloneWindow.isOpen()) {
+    standaloneWindow.close()
+  } else {
+    positionWindow()
+    standaloneWindow.open()
+  }
 }
 
 function showOverlay() {
@@ -220,7 +179,7 @@ function overlaySaveKeep(newConfig) {
 }
 
 function resetSkipFlag() {
-  states.skipInProgress = false;
+  config.skipInProgress = false;
 }
 
 function registerMenuItem() {
@@ -287,7 +246,7 @@ function formatTimeStr(totalSeconds) {
 }
 
 function checkSkipPosition() {
-  if (!config.enabled || states.skipInProgress) return;
+  if (!config.enabled || config.skipInProgress) return;
 
   const pos = parseFloat(mpv.getString("time-pos"));
   if (isNaN(pos) || pos < 0) return;
@@ -296,7 +255,7 @@ function checkSkipPosition() {
   if (isNaN(duration) || duration <= 0) return;
 
   if (config.introDuration > 0 && pos < config.introDuration) {
-    states.skipInProgress = true;
+    config.skipInProgress = true;
     mpv.command("seek", [config.introDuration.toString(), "absolute"]);
     addLog(`已跳过片头 ${formatTimeStr(config.introDuration)}`);
     setTimeout(resetSkipFlag, 500);
@@ -306,7 +265,7 @@ function checkSkipPosition() {
   if (config.outroDuration > 0) {
     const outroPoint = duration - config.outroDuration;
     if (pos >= outroPoint && pos < duration) {
-      states.skipInProgress = true;
+      config.skipInProgress = true;
       mpv.command("seek", [duration.toString(), "absolute"]);
       addLog(`已跳过片尾 ${formatTimeStr(config.outroDuration)}`);
       setTimeout(resetSkipFlag, 500);
@@ -315,22 +274,15 @@ function checkSkipPosition() {
 }
 
 function fileLoaded() {
-  states.skipInProgress = false;
+  config.skipInProgress = false;
 }
 
 event.on("iina.window-loaded", () => {
-  useStandaloneWindow = preferences.get("useStandaloneWindow") !== false;
-
-  if (!useStandaloneWindow) {
-    sidebar.loadFile("src/sidebar.html");
-  }
-
   loadConfig();
 
   event.on("mpv.time-pos.changed", checkSkipPosition);
   event.on("iina.file-loaded", fileLoaded);
 
-  registerPanelHandlers();
   registerMenuItem();
 
   input.onKeyDown('ESC', () => {
