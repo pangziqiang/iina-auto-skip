@@ -51,6 +51,8 @@ body {
     overflow-y: auto;
     user-select: none;
     -webkit-user-select: none;
+    max-width: 380px;
+    margin: 0 auto;
 }
 
 input {
