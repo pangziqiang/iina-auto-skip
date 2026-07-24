@@ -109,6 +109,8 @@ iina.onMessage(PluginEvent.LOG, ({ message }) => {
     els.logContainer.lastElementChild.remove();
 });
 
+iina.postMessage('ready', null);
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') saveSettings();
 });

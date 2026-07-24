@@ -98,11 +98,8 @@ function togglePanel() {
     if (standaloneWindow.isOpen()) {
       standaloneWindow.close()
     } else {
-      setTimeout(() => {
-        positionWindow()
-        standaloneWindow.open()
-        syncPanel()
-      }, 0)
+      positionWindow()
+      standaloneWindow.open()
     }
   } else {
     states.sidebarVisible ? sidebar.hide() : sidebar.show()
@@ -128,6 +125,7 @@ function registerPanelHandlers() {
 function registerWindowHandlers() {
   standaloneWindow.onMessage(PluginEvent.SAVE, (newConfig) => { saveConfig(newConfig); });
   standaloneWindow.onMessage('overlay-open', () => { showOverlay(); });
+  standaloneWindow.onMessage('ready', () => { syncPanel(); });
 }
 
 function showOverlay() {
