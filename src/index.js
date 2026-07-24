@@ -35,8 +35,7 @@ const OverlayEvent = {
   SEEK: 'overlay-seek',
   SAVE: 'overlay-save',
   HIDE: 'overlay-hide',
-  TIME: 'overlay-time',
-  PAUSE: 'overlay-pause'
+  TIME: 'overlay-time'
 }
 
 let config = {
@@ -57,7 +56,6 @@ function toggleOverlay() {
 
 function registerOverlayHandlers() {
   overlay.onMessage(OverlayEvent.SEEK, overlaySeek);
-  overlay.onMessage(OverlayEvent.PAUSE, overlayPause);
   overlay.onMessage(OverlayEvent.SAVE, overlaySave);
   overlay.onMessage('overlay-save-keep', overlaySaveKeep);
   overlay.onMessage(OverlayEvent.HIDE, hideOverlay);
@@ -185,10 +183,6 @@ function overlaySeek(time) {
   if (overlayVisible) {
     overlay.postMessage(OverlayEvent.TIME, time)
   }
-}
-
-function overlayPause() {
-  mpv.set("pause", true)
 }
 
 function overlaySave(newConfig) {
