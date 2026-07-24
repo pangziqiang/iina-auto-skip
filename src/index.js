@@ -82,10 +82,12 @@ function togglePanel() {
       standaloneWindow.close()
     } else {
       standaloneWindow.open()
-      try {
-        const f = core.window.frame
-        if (f) standaloneWindow.setFrame(380, 800, f.x + f.width + 5, f.y)
-      } catch (e) {}
+      setTimeout(() => {
+        try {
+          const f = core.window.frame
+          if (f) standaloneWindow.setFrame(380, 800, f.x + f.width + 5, f.y)
+        } catch (e) {}
+      }, 50)
       syncPanel()
     }
   } else {
