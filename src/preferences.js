@@ -166,6 +166,7 @@ iina.preferences.get("autoFocus", value => {
 const standaloneToggle = document.getElementById('standaloneToggle')
 standaloneToggle.addEventListener('change', () => {
   iina.preferences.set("useStandaloneWindow", standaloneToggle.checked);
+  iina.preferences.sync();
 });
 iina.preferences.get("useStandaloneWindow", value => {
   standaloneToggle.checked = value !== false;
