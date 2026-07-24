@@ -147,16 +147,16 @@ autoFocusToggle.addEventListener('change', () => {
   }, 200);
 });
 
-iina.preferences.get("keybind", keybind => {
-  iina.preferences.get("bindConflict", hasConflict => {
-    if (hasConflict) conflictingBind = keybind;
-    const clean = sanitizeKeybind(keybind || "")
-    keybindInput.value = clean;
-    if (validateKeybind(clean)) {
-      validateConflict(clean);
-    }
-  });
-});
+{
+  const keybind = iina.preferences.get("keybind") || "";
+  const hasConflict = iina.preferences.get("bindConflict");
+  if (hasConflict) conflictingBind = keybind;
+  const clean = sanitizeKeybind(keybind);
+  keybindInput.value = clean;
+  if (validateKeybind(clean)) {
+    validateConflict(clean);
+  }
+}
 
 iina.preferences.get("autoFocus", value => {
   autoFocusToggle.checked = value !== false;
@@ -185,9 +185,10 @@ overlayKeybindInput.addEventListener('input', e => {
   }, 200);
 });
 
-iina.preferences.get("overlayKeybind", value => {
-  const clean = sanitizeKeybind(value || "")
+{
+  const raw = iina.preferences.get("overlayKeybind");
+  const clean = sanitizeKeybind(raw || "");
   overlayKeybindInput.value = clean;
   overlayValidationInfo.textContent = clean ? '✓ 快捷键有效' : 'ⓘ 快捷键已禁用';
   overlayValidationInfo.className = `info-box ${clean ? 'valid' : 'info'}`;
-});
+}
