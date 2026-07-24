@@ -83,7 +83,7 @@ function _(key, params) {
 function translatePage(root) {
   root = root || document
   root.querySelectorAll('[data-i18n]').forEach(el => {
-    el.textContent = _(el.getAttribute('data-i18n'))
+    el.innerHTML = _(el.getAttribute('data-i18n'))
   })
   root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.placeholder = _(el.getAttribute('data-i18n-placeholder'))
